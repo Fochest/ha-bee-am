@@ -33,6 +33,12 @@ Es werden Messwerte wie Stromproduktion, Verbrauch, Netzbezug, Speicherzustand s
 
 ## Konfiguration
 
+Wie man den **Bearer Token** erstellt:
+- Login unter https://connect.neoom.com/users/sign_in mit den Neoom Credentials.
+- Lokalen Standort auswählen
+- Im Menü unter **Zugriffsverwaltung** auf **API-Schlüssel** klicken
+- Einen **Schlüssel für die BEAAM API** erstellen und sicher abspeichern. Dies ist der Bearer Token, den wir im nächsten Schritt benötigen.
+
 Bei der Einrichtung im UI müssen folgende Parameter angegeben werden:
 
 - **Beaam IP/Adresse** → z. B. `192.168.1.50`
