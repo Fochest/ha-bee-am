@@ -1,0 +1,10 @@
+{
+  "name": "BEAAM Integration",
+  "country": "DE",
+  "domains": ["Beaam"],
+  "homeassistant": "2025.1.4",
+  "render_readme": true,
+  "filename": "custom_components/beaam",
+  "iot_class": "local_polling",
+  "zip_release": true
+}
