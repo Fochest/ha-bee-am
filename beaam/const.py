@@ -1,0 +1,2 @@
+DOMAIN = "ntuity"
+PLATFORMS = ["sensor"]
