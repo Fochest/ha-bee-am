@@ -1,7 +1,7 @@
 {
   "domain": "beaam",
   "name": "Beaam API",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "documentation": "https://developer.neoom.com/reference",
   "requirements": [],
   "dependencies": [],
