@@ -4,6 +4,8 @@ Diese Home Assistant Custom-Integration bindet die **interne Beaam API** an.  (h
 
 Es werden Messwerte wie Stromproduktion, Verbrauch, Netzbezug, Speicherzustand sowie **Fraktionswerte (z. B. PV → Speicher, PV → Netz)** als Sensoren in Home Assistant verfügbar gemacht.
 
+Alle Sensoren unterstützen nun zusätzlich das Attribut `state_class`, um korrekte Auswertungen in den Home Assistant Dashboards zu ermöglichen.
+
 ---
 
 ## Installation
@@ -61,29 +63,29 @@ Die Integration nutzt die folgenden REST-Endpunkte der Beaam-API:
 
 ## Sensoren & Einheiten
 
-Die wichtigsten Sensoren erhalten automatisch **Einheiten** und **Device Classes**, damit sie in Home Assistant korrekt visualisiert werden:
+Die wichtigsten Sensoren erhalten automatisch **Einheiten**, **Device Classes** und **state_class**, damit sie in Home Assistant korrekt visualisiert werden:
 
-| Key                             | Einheit | Device Class |
-|---------------------------------|---------|--------------|
-| POWER_PRODUCTION                | W       | power        |
-| POWER_CONSUMPTION_CALC          | W       | power        |
-| POWER_GRID                      | W       | power        |
-| POWER_STORAGE                   | W       | power        |
-| ENERGY_PRODUCED                 | Wh      | energy       |
-| ENERGY_CONSUMED_CALC            | Wh      | energy       |
-| ENERGY_IMPORTED                 | Wh      | energy       |
-| ENERGY_EXPORTED                 | Wh      | energy       |
-| ENERGY_CHARGED                  | Wh      | energy       |
-| ENERGY_DISCHARGED               | Wh      | energy       |
-| STATE_OF_CHARGE                 | %       | battery      |
-| SELF_SUFFICIENCY                | %       | –            |
-| FRACTION_PV_TO_STORAGE          | %       | –            |
-| FRACTION_PV_TO_GRID             | %       | –            |
-| FRACTION_PV_TO_CONSUMPTION      | %       | –            |
-| FRACTION_GRID_TO_STORAGE        | %       | –            |
-| FRACTION_GRID_TO_CONSUMPTION    | %       | –            |
-| FRACTION_STORAGE_TO_CONSUMPTION | %       | –            |
-| FRACTION_STORAGE_TO_GRID        | %       | –            |
+| Key                             | Einheit | Device Class | state_class |
+|---------------------------------|---------|--------------|-------------|
+| POWER_PRODUCTION                | W       | power        | measurement |
+| POWER_CONSUMPTION_CALC          | W       | power        | measurement |
+| POWER_GRID                      | W       | power        | measurement |
+| POWER_STORAGE                   | W       | power        | measurement |
+| ENERGY_PRODUCED                 | Wh      | energy       | total_increasing |
+| ENERGY_CONSUMED_CALC            | Wh      | energy       | total_increasing |
+| ENERGY_IMPORTED                 | Wh      | energy       | total_increasing |
+| ENERGY_EXPORTED                 | Wh      | energy       | total_increasing |
+| ENERGY_CHARGED                  | Wh      | energy       | total_increasing |
+| ENERGY_DISCHARGED               | Wh      | energy       | total_increasing |
+| STATE_OF_CHARGE                 | %       | battery      | measurement |
+| SELF_SUFFICIENCY                | %       | –            | measurement |
+| FRACTION_PV_TO_STORAGE          | %       | –            | measurement |
+| FRACTION_PV_TO_GRID             | %       | –            | measurement |
+| FRACTION_PV_TO_CONSUMPTION      | %       | –            | measurement |
+| FRACTION_GRID_TO_STORAGE        | %       | –            | measurement |
+| FRACTION_GRID_TO_CONSUMPTION    | %       | –            | measurement |
+| FRACTION_STORAGE_TO_CONSUMPTION | %       | –            | measurement |
+| FRACTION_STORAGE_TO_GRID        | %       | –            | measurement |
 
 Alle **Fraction-Werte** werden automatisch von Dezimal (z. B. `0.1188`) in Prozent (z. B. `11.88 %`) umgerechnet.
 
