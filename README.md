@@ -102,7 +102,7 @@ Alle **Fraction-Werte** werden automatisch von Dezimal (z. B. `0.1188`) in Proze
 
 ## ToDo / Erweiterungen
 
-- Schreibenden Zugriff via things/{thingId}/commands
+- Schreibenden Zugriff via POST auf things/{thingId}/commands
 - Unterstützung für weitere Endpunkte (`things/states`)
 - Automatische Geräte- und Entitätsklassifizierung basierend auf `site/configuration`
 - Konfigurierbares Polling-Intervall
