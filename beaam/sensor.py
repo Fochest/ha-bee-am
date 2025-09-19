@@ -21,9 +21,8 @@ SENSOR_DEFINITIONS = {
     "ENERGY_CONSUMED_CALC": (UnitOfEnergy.WATT_HOUR, "energy"),
     "STATE_OF_CHARGE": (PERCENTAGE, "battery"),
     "SELF_SUFFICIENCY": (PERCENTAGE, None),
-    # weitere Keys nach Bedarf ergänzen
+    # Fraktionen → werden zusätzlich dynamisch behandelt
 }
-
 
 async def async_setup_entry(hass, entry, async_add_entities):
     data = hass.data[DOMAIN][entry.entry_id]
@@ -45,6 +44,11 @@ class BeaamSensor(SensorEntity):
         definition = SENSOR_DEFINITIONS.get(key, (None, None))
         self._unit, self._device_class = definition
 
+        # Fraktionswerte → immer in Prozent
+        if key.startswith("FRACTION_"):
+            self._unit = PERCENTAGE
+            self._device_class = None
+
     @property
     def name(self):
         return f"Beaam {self._key}"
@@ -58,7 +62,12 @@ class BeaamSensor(SensorEntity):
         energy_flow = self.coordinator.data.get("site_state", {}).get("energyFlow", {})
         for state in energy_flow.get("states", []):
             if state["key"] == self._key:
-                return state["value"]
+                value = state["value"]
+                if value is None:
+                    return None
+                if self._key.startswith("FRACTION_"):
+                    return round(value * 100, 2)  # in %
+                return value
         return None
 
     @property
