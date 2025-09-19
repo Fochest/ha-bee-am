@@ -1,6 +1,4 @@
-# Home Assistant Custom Integration – Beaam API
-
-![NeoomLogo](https://neoom.com/hubfs/01_neoom%20Website%20neu/Logos/RZ_neoom_Logo_Positiv_RGB.svg) 
+# Home Assistant Custom Integration – BEAAM API
 
 Diese Home Assistant Custom-Integration bindet die **interne Beaam API** an.  (https://developer.neoom.com/reference/concepts-terms-1)
 
@@ -118,3 +116,7 @@ Alle **Fraction-Werte** werden automatisch von Dezimal (z. B. `0.1188`) in Proze
 ## Lizenz
 
 MIT
+
+## Disclaimer
+
+Ich bin in keinester Weise mit NEOOM assoziiert, dies Projekt betreibe ich als privates Entwicklungsprojekt.
