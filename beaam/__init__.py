@@ -1,39 +1,28 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_entry_oauth2_flow
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import DOMAIN, PLATFORMS
-from .api import NtuityApiClient
-from .coordinator import NtuityDataUpdateCoordinator
+from .api import BeaamApiClient
+from .coordinator import BeaamDataUpdateCoordinator
+
+
+async def async_setup(hass: HomeAssistant, config: dict):
+    hass.data.setdefault(DOMAIN, {})
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    """Set up Ntuity from a config entry."""
+    ip = entry.data["beaam_ip"]
+    token = entry.data["api_token"]
 
-    # Register OAuth2 implementation
-    config_entry_oauth2_flow.async_register_implementation(
-        hass,
-        DOMAIN,
-        config_entry_oauth2_flow.LocalOAuth2Implementation(
-            hass,
-            DOMAIN,
-            client_id=entry.data.get("client_id", ""),
-            client_secret=entry.data.get("client_secret", ""),
-            authorize_url="https://api.ntuity.io/oauth/authorize",
-            token_url="https://api.ntuity.io/oauth/token",
-        ),
-    )
+    session = async_get_clientsession(hass)
+    api = BeaamApiClient(session, ip, token)
 
-    implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(hass, entry)
-    oauth_session = config_entry_oauth2_flow.OAuth2Session(hass, entry, implementation)
-    session = hass.helpers.aiohttp_client.async_get_clientsession()
-
-    api = NtuityApiClient(session, oauth_session)
-    coordinator = NtuityDataUpdateCoordinator(hass, api, update_interval=60)
+    coordinator = BeaamDataUpdateCoordinator(hass, api)
     await coordinator.async_config_entry_first_refresh()
 
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = {"coordinator": coordinator}
+    hass.data[DOMAIN][entry.entry_id] = {"coordinator": coordinator, "api": api}
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True

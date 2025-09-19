@@ -1,36 +1,73 @@
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.const import POWER_WATT
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.const import (
+    UnitOfPower,
+    UnitOfEnergy,
+    PERCENTAGE,
+)
 from .const import DOMAIN
+
+# Mapping von Beaam-Keys auf Einheit & Device Class
+SENSOR_DEFINITIONS = {
+    "POWER_PRODUCTION": (UnitOfPower.WATT, "power"),
+    "POWER_CONSUMPTION_CALC": (UnitOfPower.WATT, "power"),
+    "POWER_GRID": (UnitOfPower.WATT, "power"),
+    "POWER_STORAGE": (UnitOfPower.WATT, "power"),
+    "ENERGY_PRODUCED": (UnitOfEnergy.WATT_HOUR, "energy"),
+    "ENERGY_CONSUMED": (UnitOfEnergy.WATT_HOUR, "energy"),
+    "ENERGY_IMPORTED": (UnitOfEnergy.WATT_HOUR, "energy"),
+    "ENERGY_EXPORTED": (UnitOfEnergy.WATT_HOUR, "energy"),
+    "ENERGY_CHARGED": (UnitOfEnergy.WATT_HOUR, "energy"),
+    "ENERGY_DISCHARGED": (UnitOfEnergy.WATT_HOUR, "energy"),
+    "ENERGY_CONSUMED_CALC": (UnitOfEnergy.WATT_HOUR, "energy"),
+    "STATE_OF_CHARGE": (PERCENTAGE, "battery"),
+    "SELF_SUFFICIENCY": (PERCENTAGE, None),
+    # weitere Keys nach Bedarf ergänzen
+}
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    entities = []
+    data = hass.data[DOMAIN][entry.entry_id]
+    coordinator = data["coordinator"]
 
-    for site_id, data in coordinator.data.items():
-        site = data["site"]
-        ef = data.get("energy_flow") or {}
-        if ef:
-            entities.append(NtuitySiteSensor(coordinator, site_id, "Total Power", ef.get("power", 0)))
+    sensors = []
+    energy_flow = coordinator.data.get("site_state", {}).get("energyFlow", {})
+    for state in energy_flow.get("states", []):
+        key = state["key"]
+        sensors.append(BeaamSensor(coordinator, key))
 
-    async_add_entities(entities)
+    async_add_entities(sensors)
 
 
-class NtuitySiteSensor(CoordinatorEntity):
-    def __init__(self, coordinator, site_id, name, initial_value):
-        super().__init__(coordinator)
-        self._site_id = site_id
-        self._attr_name = f"Ntuity {site_id} {name}"
-        self._attr_unique_id = f"ntuity_{site_id}_{name}"
-        self._value = initial_value
-
-    @property
-    def state(self):
-        try:
-            return self.coordinator.data[self._site_id]["energy_flow"]["power"]
-        except Exception:
-            return None
+class BeaamSensor(SensorEntity):
+    def __init__(self, coordinator, key):
+        self.coordinator = coordinator
+        self._key = key
+        definition = SENSOR_DEFINITIONS.get(key, (None, None))
+        self._unit, self._device_class = definition
 
     @property
-    def unit_of_measurement(self):
-        return POWER_WATT
+    def name(self):
+        return f"Beaam {self._key}"
+
+    @property
+    def unique_id(self):
+        return f"beaam_{self._key.lower()}"
+
+    @property
+    def native_value(self):
+        energy_flow = self.coordinator.data.get("site_state", {}).get("energyFlow", {})
+        for state in energy_flow.get("states", []):
+            if state["key"] == self._key:
+                return state["value"]
+        return None
+
+    @property
+    def native_unit_of_measurement(self):
+        return self._unit
+
+    @property
+    def device_class(self):
+        return self._device_class
+
+    async def async_update(self):
+        await self.coordinator.async_request_refresh()

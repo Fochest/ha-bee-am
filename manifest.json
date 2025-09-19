@@ -1,11 +1,11 @@
 {
-  "domain": "ntuity",
-  "name": "Beaam Public API",
-  "version": "1.0.0",
-  "documentation": "https://api.ntuity.io/",
+  "domain": "beaam",
+  "name": "Beaam API",
+  "version": "0.1.0",
+  "documentation": "https://developer.neoom.com/reference",
   "requirements": [],
-  "dependencies": ["auth"],
+  "dependencies": [],
   "codeowners": ["@Fochest"],
   "config_flow": true,
-  "iot_class": "cloud_polling"
+  "iot_class": "local_polling"
 }
