@@ -119,4 +119,4 @@ MIT
 
 ## Disclaimer
 
-Ich bin in keinester Weise mit NEOOM assoziiert, dies Projekt betreibe ich als privates Entwicklungsprojekt.
+Ich bin in keinster Weise mit NEOOM assoziiert, dies Projekt betreibe ich als rein privates Entwicklungsprojekt ohne Gewinnabsicht.
