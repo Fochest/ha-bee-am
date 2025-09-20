@@ -5,5 +5,5 @@
   "render_readme": true,
   "filename": "custom_components/beaam",
   "zip_release": true,
-  "issue-tracker": "https://github.com/Fochest/ha-bee-am/issues"
+  "issue_tracker": "https://github.com/Fochest/ha-bee-am/issues"
 }
