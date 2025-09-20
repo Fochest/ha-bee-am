@@ -7,5 +7,6 @@
   "dependencies": [],
   "codeowners": ["@Fochest"],
   "config_flow": true,
-  "iot_class": "local_polling"
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/Fochest/ha-bee-am/issues"
 }
