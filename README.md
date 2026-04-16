@@ -55,9 +55,9 @@ Die Integration nutzt die folgenden REST-Endpunkte der Beaam-API:
 - `GET http://{beaamIp}/api/v1/site/state`  
   → liefert aktuelle Energieflüsse und KPIs
 - `GET http://{beaamIp}/api/v1/site/configuration`  
-  → liefert Konfigurationsdaten der Site
+  → liefert Konfigurationsdaten der Site (wird u. a. zur automatischen Erkennung der Wallboxen genutzt)
 - `GET http://{beaamIp}/api/v1/things/{thingId}/states`  
-  → liefert Zustände einzelner Things (kann später ergänzt werden)
+  → liefert Zustände einzelner Things (derzeit für `CHARGING_POINT_AC` genutzt)
 
 ---
 
@@ -91,6 +91,36 @@ Alle **Fraction-Werte** werden automatisch von Dezimal (z. B. `0.1188`) in Proze
 
 ---
 
+## Wallbox (CHARGING_POINT_AC)
+
+Jede in der Site konfigurierte Wallbox vom Typ `CHARGING_POINT_AC` wird automatisch erkannt (Discovery über `/site/configuration` anhand des Thing-Typs, die konkrete Thing-ID wird nicht hart kodiert) und als eigenes Gerät in Home Assistant angelegt. Je Wallbox werden folgende Sensoren erzeugt:
+
+| Key                       | Einheit | Device Class | state_class       |
+|---------------------------|---------|--------------|-------------------|
+| ACTIVE_POWER              | W       | power        | measurement       |
+| MAX_POWER_CHARGE          | W       | power        | measurement       |
+| MAX_POWER_CHARGE_FALLBACK | W       | power        | measurement       |
+| CURRENT_P1 / P2 / P3      | A       | current      | measurement       |
+| VOLTAGE_P1 / P2 / P3      | V       | voltage      | measurement       |
+| CONSUMED_ENERGY_TOTAL     | Wh      | energy       | total_increasing  |
+| CONSUMED_ENERGY_ACTUAL    | Wh      | energy       | total             |
+| CHARGING_PROCESS_ENERGY   | Wh      | energy       | total             |
+| CHARGING_TIME             | s       | duration     | measurement       |
+| EV_STATE_CODE             | –       | –            | –                 |
+| CP_STATE_CODE             | –       | –            | –                 |
+| PHASE_SWITCHING_MODE      | –       | –            | –                 |
+| LAST_RFID_CARD            | –       | –            | –                 |
+| SERIAL_NUMBER             | –       | –            | –                 |
+| FIRMWARE_VERSION          | –       | –            | –                 |
+
+Hinweise:
+
+- `CONSUMED_ENERGY_TOTAL` ist der kumulierte Lebenszeit-Zähler der Wallbox und eignet sich für das Home Assistant Energie-Dashboard.
+- `CONSUMED_ENERGY_ACTUAL` und `CHARGING_PROCESS_ENERGY` beziehen sich auf den **aktuellen Ladevorgang** und werden daher als `total` (nicht `total_increasing`) klassifiziert, da sie mit jedem neuen Vorgang zurückgesetzt werden.
+- Mehrere Wallboxen werden parallel abgefragt; der Ausfall einer einzelnen Wallbox verhindert nicht die Aktualisierung der übrigen Sensoren.
+
+---
+
 ## Hinweise
 
 - Die Integration arbeitet **lokal** gegen die interne API des Beaam, keine Cloud-Verbindung notwendig.
@@ -109,8 +139,7 @@ Alle **Fraction-Werte** werden automatisch von Dezimal (z. B. `0.1188`) in Proze
 ## ToDo / Erweiterungen
 
 - Schreibenden Zugriff via POST auf things/{thingId}/commands
-- Unterstützung für weitere Endpunkte (`things/states`)
-- Automatische Geräte- und Entitätsklassifizierung basierend auf `site/configuration`
+- Unterstützung für weitere Thing-Typen (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analog zur Wallbox-Integration
 - Konfigurierbares Polling-Intervall
 
 ---
