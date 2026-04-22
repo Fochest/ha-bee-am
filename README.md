@@ -10,13 +10,13 @@ Alle Sensoren unterstützen nun zusätzlich das Attribut `state_class`, um korre
 
 ## Installation
 
-1. Lade das Repository/ZIP herunter und entpacke es nach:
+1. Lade das `beaam.zip` aus dem neuesten [Release](https://github.com/Fochest/ha-bee-am/releases/latest) herunter und entpacke es nach:
 
    ```
-   config/
+   config/custom_components/beaam/
    ```
 
-   Das Archiv enthält bereits den Ordner `custom_components/`, sodass anschließend folgende Struktur existiert:
+   sodass folgende Struktur existiert:
 
    ```
    config/custom_components/beaam/__init__.py
