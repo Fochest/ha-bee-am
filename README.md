@@ -13,10 +13,10 @@ Alle Sensoren unterstützen nun zusätzlich das Attribut `state_class`, um korre
 1. Lade das Repository/ZIP herunter und entpacke es nach:
 
    ```
-   config/custom_components/beaam/
+   config/
    ```
 
-   sodass z. B. folgende Struktur existiert:
+   Das Archiv enthält bereits den Ordner `custom_components/`, sodass anschließend folgende Struktur existiert:
 
    ```
    config/custom_components/beaam/__init__.py
