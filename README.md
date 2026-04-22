@@ -1,5 +1,7 @@
 # Home Assistant Custom Integration – BEAAM API
 
+*[English](README.en.md) • **Deutsch***
+
 Diese Home Assistant Custom-Integration bindet die **interne Beaam API** an.  (https://developer.neoom.com/reference/concepts-terms-1)
 
 Es werden Messwerte wie Stromproduktion, Verbrauch, Netzbezug, Speicherzustand sowie **Fraktionswerte (z. B. PV → Speicher, PV → Netz)** als Sensoren in Home Assistant verfügbar gemacht.
