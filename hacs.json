@@ -3,6 +3,6 @@
   "country": "DE",
   "homeassistant": "2025.1.4",
   "render_readme": true,
-  "filename": "custom_components/beaam",
+  "filename": "beaam.zip",
   "zip_release": true
 }
