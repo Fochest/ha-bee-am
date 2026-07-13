@@ -60,6 +60,10 @@ The integration uses the following REST endpoints of the Beaam API:
   → returns site configuration data (used, among other things, for automatic discovery of wallboxes)
 - `GET http://{beaamIp}/api/v1/things/{thingId}/states`  
   → returns the state of individual things (currently used for `CHARGING_POINT_AC`)
+- `GET http://{beaamIp}/api/v1/things/{thingId}/settings`  
+  → returns a thing's settings (including the charging mode `OPERATING_MODE_EMS`)
+- `PUT http://{beaamIp}/api/v1/things/{thingId}/settings`  
+  → writes settings (used to switch the wallbox charging mode)
 
 ---
 
@@ -121,6 +125,19 @@ Notes:
 - `CONSUMED_ENERGY_ACTUAL` and `CHARGING_PROCESS_ENERGY` refer to the **current charging session** and are therefore classified as `total` (not `total_increasing`), as they reset with every new session.
 - Multiple wallboxes are queried in parallel; the failure of a single wallbox does not prevent the remaining sensors from updating.
 
+### Switch charging mode (select)
+
+For every wallbox that exposes the `OPERATING_MODE_EMS` setting, a **`select` entity "Lademodus" (charging mode)** is created as well. It lets you switch the charging mode straight from Home Assistant (writes via `PUT /things/{thingId}/settings`):
+
+| Option    | `OPERATING_MODE_EMS` |
+|-----------|----------------------|
+| Solar     | `EXCESS_CONSUMPTION` |
+| Schnell   | `FAST_CHARGING`      |
+
+- **Solar** charges from PV surplus, **Schnell** (fast) charges at full power.
+- If the wallbox reports an unknown mode value, it is shown as an additional (raw) option so the current state is always represented correctly.
+- After switching, the coordinator refreshes immediately so the new mode appears without waiting for the polling interval.
+
 ---
 
 ## Notes
@@ -140,7 +157,7 @@ Notes:
 
 ## ToDo / future extensions
 
-- Write access via POST to `things/{thingId}/commands`
+- Further write actions via POST to `things/{thingId}/commands` (e.g. charging power, start/stop)
 - Support for additional thing types (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analogous to the wallbox integration
 - Configurable polling interval
 

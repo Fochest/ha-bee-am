@@ -60,6 +60,10 @@ Die Integration nutzt die folgenden REST-Endpunkte der Beaam-API:
   → liefert Konfigurationsdaten der Site (wird u. a. zur automatischen Erkennung der Wallboxen genutzt)
 - `GET http://{beaamIp}/api/v1/things/{thingId}/states`  
   → liefert Zustände einzelner Things (derzeit für `CHARGING_POINT_AC` genutzt)
+- `GET http://{beaamIp}/api/v1/things/{thingId}/settings`  
+  → liefert Einstellungen eines Things (u. a. den Lademodus `OPERATING_MODE_EMS`)
+- `PUT http://{beaamIp}/api/v1/things/{thingId}/settings`  
+  → schreibt Einstellungen (wird zum Umschalten des Wallbox-Lademodus genutzt)
 
 ---
 
@@ -121,6 +125,19 @@ Hinweise:
 - `CONSUMED_ENERGY_ACTUAL` und `CHARGING_PROCESS_ENERGY` beziehen sich auf den **aktuellen Ladevorgang** und werden daher als `total` (nicht `total_increasing`) klassifiziert, da sie mit jedem neuen Vorgang zurückgesetzt werden.
 - Mehrere Wallboxen werden parallel abgefragt; der Ausfall einer einzelnen Wallbox verhindert nicht die Aktualisierung der übrigen Sensoren.
 
+### Lademodus umschalten (Select)
+
+Für jede Wallbox mit dem Setting `OPERATING_MODE_EMS` wird zusätzlich eine **`select`-Entität „Lademodus"** angelegt. Damit lässt sich der Lademodus direkt aus Home Assistant umschalten (schreibt via `PUT /things/{thingId}/settings`):
+
+| Auswahl   | `OPERATING_MODE_EMS` |
+|-----------|----------------------|
+| Solar     | `EXCESS_CONSUMPTION` |
+| Schnell   | `FAST_CHARGING`      |
+
+- **Solar** lädt aus PV-Überschuss, **Schnell** lädt mit voller Leistung.
+- Meldet die Wallbox einen unbekannten Modus-Wert, wird dieser als zusätzliche (rohe) Option angezeigt, damit der aktuelle Zustand immer korrekt dargestellt wird.
+- Nach dem Umschalten wird der Coordinator sofort aktualisiert, sodass der neue Modus ohne Wartezeit auf das Polling-Intervall erscheint.
+
 ---
 
 ## Hinweise
@@ -140,7 +157,7 @@ Hinweise:
 
 ## ToDo / Erweiterungen
 
-- Schreibenden Zugriff via POST auf things/{thingId}/commands
+- Weitere schreibende Aktionen via POST auf things/{thingId}/commands (z. B. Ladeleistung, Start/Stop)
 - Unterstützung für weitere Thing-Typen (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analog zur Wallbox-Integration
 - Konfigurierbares Polling-Intervall
 

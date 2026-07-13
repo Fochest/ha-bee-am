@@ -30,6 +30,7 @@ class BeaamDataUpdateCoordinator(DataUpdateCoordinator):
             ]
 
             charging_points = {}
+            charging_point_settings = {}
             if charging_point_ids:
                 results = await asyncio.gather(
                     *(self.api.async_get_thing_states(tid) for tid in charging_point_ids),
@@ -43,10 +44,23 @@ class BeaamDataUpdateCoordinator(DataUpdateCoordinator):
                         continue
                     charging_points[tid] = result
 
+                settings_results = await asyncio.gather(
+                    *(self.api.async_get_thing_settings(tid) for tid in charging_point_ids),
+                    return_exceptions=True,
+                )
+                for tid, result in zip(charging_point_ids, settings_results):
+                    if isinstance(result, Exception):
+                        _LOGGER.warning(
+                            "Failed to fetch settings for charging point %s: %s", tid, result
+                        )
+                        continue
+                    charging_point_settings[tid] = result
+
             return {
                 "site_state": site_state,
                 "site_config": site_config,
                 "charging_points": charging_points,
+                "charging_point_settings": charging_point_settings,
             }
         except Exception as err:
             raise UpdateFailed(f"Error fetching Beaam data: {err}") from err
