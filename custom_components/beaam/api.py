@@ -30,9 +30,9 @@ class BeaamApiClient:
         async with async_timeout.timeout(15):
             resp = await self._session.put(url, headers=self._headers(), json=payload)
             resp.raise_for_status()
-            if resp.content_length:
-                return await resp.json()
-            return None
+            # Beaam answers PUT /settings with a text/plain body, so don't decode
+            # as JSON. The response isn't used; just confirm success and return it raw.
+            return await resp.text()
 
     async def async_get_site_state(self):
         return await self._get(API_SITE_STATE)
