@@ -1,6 +1,8 @@
 import logging
 
 from homeassistant.components.select import SelectEntity
+from homeassistant.core import callback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, CHARGING_MODE_SETTING, CHARGING_MODES
 
@@ -25,13 +27,15 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(entities)
 
 
-class BeaamWallboxModeSelect(SelectEntity):
+class BeaamWallboxModeSelect(CoordinatorEntity, SelectEntity):
     """Charging mode (Solar / Schnell) for a Beaam charging point."""
 
     def __init__(self, coordinator, api, thing_id):
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._api = api
         self._thing_id = thing_id
+        # Optimistically remembered option, shown until the device confirms it.
+        self._optimistic = None
 
     @property
     def name(self):
@@ -48,6 +52,12 @@ class BeaamWallboxModeSelect(SelectEntity):
                 return setting.get("value")
         return None
 
+    def _device_option(self):
+        raw = self._raw_value()
+        if raw is None:
+            return None
+        return CHARGING_MODES.get(raw, str(raw))
+
     @property
     def options(self):
         # Known modes, plus the current raw value if the device reports something unmapped,
@@ -60,18 +70,32 @@ class BeaamWallboxModeSelect(SelectEntity):
 
     @property
     def current_option(self):
-        raw = self._raw_value()
-        if raw is None:
-            return None
-        return CHARGING_MODES.get(raw, str(raw))
+        # Prefer the optimistic value so the UI reflects the switch immediately.
+        return self._optimistic or self._device_option()
 
     async def async_select_option(self, option: str):
         value = LABEL_TO_VALUE.get(option)
         if value is None:
             _LOGGER.warning("Unknown Beaam charging mode option: %s", option)
             return
-        await self._api.async_set_thing_setting(self._thing_id, CHARGING_MODE_SETTING, value)
+        # Show the new mode right away, then write it.
+        self._optimistic = option
+        self.async_write_ha_state()
+        try:
+            await self._api.async_set_thing_setting(self._thing_id, CHARGING_MODE_SETTING, value)
+        except Exception:
+            # Revert the optimistic value if the write failed.
+            self._optimistic = None
+            self.async_write_ha_state()
+            raise
         await self.coordinator.async_request_refresh()
+
+    @callback
+    def _handle_coordinator_update(self):
+        # Drop the optimistic value once the device confirms the new mode.
+        if self._optimistic is not None and self._device_option() == self._optimistic:
+            self._optimistic = None
+        super()._handle_coordinator_update()
 
     @property
     def device_info(self):
@@ -81,6 +105,3 @@ class BeaamWallboxModeSelect(SelectEntity):
             "manufacturer": "NEOOM",
             "model": "CHARGING_POINT_AC",
         }
-
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
