@@ -74,13 +74,20 @@ Die wichtigsten Sensoren erhalten automatisch **Einheiten**, **Device Classes** 
 | Key                             | Einheit | Device Class | state_class |
 |---------------------------------|---------|--------------|-------------|
 | POWER_PRODUCTION                | W       | power        | measurement |
+| POWER_CONSUMPTION                | W       | power        | measurement |
 | POWER_CONSUMPTION_CALC          | W       | power        | measurement |
 | POWER_APPLIANCES                | W       | power        | measurement |
+| POWER_CHARGING_STATIONS         | W       | power        | measurement |
+| POWER_HEATING                   | W       | power        | measurement |
 | POWER_GRID                      | W       | power        | measurement |
 | POWER_STORAGE                   | W       | power        | measurement |
+| MAX_NETWORK_UTILIZATION         | W       | power        | measurement |
 | ENERGY_PRODUCED                 | Wh      | energy       | total_increasing |
+| ENERGY_CONSUMED                 | Wh      | energy       | total_increasing |
 | ENERGY_CONSUMED_CALC            | Wh      | energy       | total_increasing |
 | ENERGY_APPLIANCES               | Wh      | energy       | total_increasing |
+| ENERGY_CHARGING_STATIONS        | Wh      | energy       | total_increasing |
+| ENERGY_HEATING                  | Wh      | energy       | total_increasing |
 | ENERGY_IMPORTED                 | Wh      | energy       | total_increasing |
 | ENERGY_EXPORTED                 | Wh      | energy       | total_increasing |
 | ENERGY_CHARGED                  | Wh      | energy       | total_increasing |
@@ -96,6 +103,12 @@ Die wichtigsten Sensoren erhalten automatisch **Einheiten**, **Device Classes** 
 | FRACTION_STORAGE_TO_GRID        | %       | –            | measurement |
 
 Alle **Fraction-Werte** werden automatisch von Dezimal (z. B. `0.1188`) in Prozent (z. B. `11.88 %`) umgerechnet.
+
+Hinweise zum Verbrauch:
+
+- `POWER_CONSUMPTION_CALC` / `ENERGY_CONSUMED_CALC` sind der **berechnete Gesamtverbrauch** für Sites ohne dedizierten Verbrauchszähler. Mit eigenem Zähler liefert NEOOM stattdessen `POWER_CONSUMPTION` / `ENERGY_CONSUMED` (gemessen). Für den Hausverbrauch diese Keys nutzen.
+- `POWER_APPLIANCES` ist laut NEOOM ein **Residualwert**: Gesamtverbrauch minus alle anderen Unterverbraucher (`POWER_CHARGING_STATIONS`, `POWER_HEATING`, …). Also *nicht* als Gesamtverbrauch verwenden.
+- Nicht explizit gemappte Keys bekommen anhand ihres `POWER_*`/`ENERGY_*`-Präfixes automatisch W bzw. Wh zugewiesen. Keys ohne bekanntes Präfix (z. B. reine Status-Strings) werden **standardmäßig deaktiviert** angelegt, damit sie den Aktivitätsstream nicht zumüllen — bei Bedarf in Home Assistant manuell aktivieren.
 
 ---
 

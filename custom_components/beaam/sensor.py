@@ -15,13 +15,23 @@ from .const import DOMAIN
 # Mapping von Beaam-Keys auf Einheit & Device Class
 SENSOR_DEFINITIONS = {
     "POWER_PRODUCTION": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
+    # POWER_CONSUMPTION = measured total (meter-equipped sites);
+    # POWER_CONSUMPTION_CALC = calculated fallback when no dedicated meter exists
+    "POWER_CONSUMPTION": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_CONSUMPTION_CALC": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
+    # sub-consumers; APPLIANCES = total consumption minus all other sub-consumers
     "POWER_APPLIANCES": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
+    "POWER_CHARGING_STATIONS": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
+    "POWER_HEATING": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_GRID": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_STORAGE": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
+    "MAX_NETWORK_UTILIZATION": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "ENERGY_PRODUCED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
+    "ENERGY_CONSUMED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_CONSUMED_CALC": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_APPLIANCES": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
+    "ENERGY_CHARGING_STATIONS": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
+    "ENERGY_HEATING": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_IMPORTED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_EXPORTED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_CHARGED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
@@ -87,14 +97,26 @@ class BeaamSensor(SensorEntity):
             self._unit = PERCENTAGE
             self._device_class = None
             self._state_class = SensorStateClass.MEASUREMENT
+        elif self._unit is None:
+            # Key not explicitly mapped: infer sensible metadata from the
+            # POWER_/ENERGY_ prefix so newly added NEOOM keys still get a unit
+            # (and are thus auto-excluded from the logbook) without a code change.
+            if key.startswith("POWER_"):
+                self._unit = UnitOfPower.WATT
+                self._device_class = "power"
+                self._state_class = SensorStateClass.MEASUREMENT
+            elif key.startswith("ENERGY_"):
+                self._unit = UnitOfEnergy.WATT_HOUR
+                self._device_class = "energy"
+                self._state_class = SensorStateClass.TOTAL_INCREASING
 
         # The energyFlow loop creates a sensor for every key the NEOOM API
-        # returns, including keys we don't map yet. Unmapped keys have no unit,
-        # so HA won't treat them as continuous and they clutter the logbook.
-        # Create them disabled-by-default so newly added API keys never show up
-        # unasked until we map them properly.
-        known = key in SENSOR_DEFINITIONS or key.startswith("FRACTION_")
-        self._attr_entity_registry_enabled_default = known
+        # returns. Keys we can give a unit to (explicit map, FRACTION_, or an
+        # inferred POWER_/ENERGY_ prefix) are continuous and stay out of the
+        # logbook, so enable them. Anything still without a unit (unknown string
+        # keys) is created disabled so it never clutters the activity stream
+        # until we map it properly.
+        self._attr_entity_registry_enabled_default = self._unit is not None
 
     @property
     def name(self):

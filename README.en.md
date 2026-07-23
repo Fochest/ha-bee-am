@@ -74,13 +74,20 @@ The main sensors automatically receive **units**, **device classes**, and **stat
 | Key                             | Unit | Device Class | state_class |
 |---------------------------------|------|--------------|-------------|
 | POWER_PRODUCTION                | W    | power        | measurement |
+| POWER_CONSUMPTION                | W    | power        | measurement |
 | POWER_CONSUMPTION_CALC          | W    | power        | measurement |
 | POWER_APPLIANCES                | W    | power        | measurement |
+| POWER_CHARGING_STATIONS         | W    | power        | measurement |
+| POWER_HEATING                   | W    | power        | measurement |
 | POWER_GRID                      | W    | power        | measurement |
 | POWER_STORAGE                   | W    | power        | measurement |
+| MAX_NETWORK_UTILIZATION         | W    | power        | measurement |
 | ENERGY_PRODUCED                 | Wh   | energy       | total_increasing |
+| ENERGY_CONSUMED                 | Wh   | energy       | total_increasing |
 | ENERGY_CONSUMED_CALC            | Wh   | energy       | total_increasing |
 | ENERGY_APPLIANCES               | Wh   | energy       | total_increasing |
+| ENERGY_CHARGING_STATIONS        | Wh   | energy       | total_increasing |
+| ENERGY_HEATING                  | Wh   | energy       | total_increasing |
 | ENERGY_IMPORTED                 | Wh   | energy       | total_increasing |
 | ENERGY_EXPORTED                 | Wh   | energy       | total_increasing |
 | ENERGY_CHARGED                  | Wh   | energy       | total_increasing |
@@ -96,6 +103,12 @@ The main sensors automatically receive **units**, **device classes**, and **stat
 | FRACTION_STORAGE_TO_GRID        | %    | –            | measurement |
 
 All **fraction values** are automatically converted from decimals (e.g. `0.1188`) into percent (e.g. `11.88 %`).
+
+Notes on consumption:
+
+- `POWER_CONSUMPTION_CALC` / `ENERGY_CONSUMED_CALC` are the **calculated total consumption** for sites without a dedicated consumption meter. With a meter installed NEOOM sends `POWER_CONSUMPTION` / `ENERGY_CONSUMED` (measured) instead. Use these for whole-home consumption.
+- `POWER_APPLIANCES` is, per NEOOM, a **residual**: total consumption minus all other sub-consumers (`POWER_CHARGING_STATIONS`, `POWER_HEATING`, …). Do *not* use it as total consumption.
+- Keys not explicitly mapped are given W/Wh automatically based on their `POWER_*`/`ENERGY_*` prefix. Keys without a known prefix (e.g. plain status strings) are created **disabled by default** so they don't clutter the activity stream — enable them manually in Home Assistant if needed.
 
 ---
 
