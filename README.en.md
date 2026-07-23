@@ -75,10 +75,12 @@ The main sensors automatically receive **units**, **device classes**, and **stat
 |---------------------------------|------|--------------|-------------|
 | POWER_PRODUCTION                | W    | power        | measurement |
 | POWER_CONSUMPTION_CALC          | W    | power        | measurement |
+| POWER_APPLIANCES                | W    | power        | measurement |
 | POWER_GRID                      | W    | power        | measurement |
 | POWER_STORAGE                   | W    | power        | measurement |
 | ENERGY_PRODUCED                 | Wh   | energy       | total_increasing |
 | ENERGY_CONSUMED_CALC            | Wh   | energy       | total_increasing |
+| ENERGY_APPLIANCES               | Wh   | energy       | total_increasing |
 | ENERGY_IMPORTED                 | Wh   | energy       | total_increasing |
 | ENERGY_EXPORTED                 | Wh   | energy       | total_increasing |
 | ENERGY_CHARGED                  | Wh   | energy       | total_increasing |

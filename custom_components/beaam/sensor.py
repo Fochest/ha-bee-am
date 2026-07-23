@@ -16,10 +16,12 @@ from .const import DOMAIN
 SENSOR_DEFINITIONS = {
     "POWER_PRODUCTION": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_CONSUMPTION_CALC": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
+    "POWER_APPLIANCES": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_GRID": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_STORAGE": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "ENERGY_PRODUCED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_CONSUMED_CALC": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
+    "ENERGY_APPLIANCES": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_IMPORTED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_EXPORTED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
     "ENERGY_CHARGED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
@@ -85,6 +87,14 @@ class BeaamSensor(SensorEntity):
             self._unit = PERCENTAGE
             self._device_class = None
             self._state_class = SensorStateClass.MEASUREMENT
+
+        # The energyFlow loop creates a sensor for every key the NEOOM API
+        # returns, including keys we don't map yet. Unmapped keys have no unit,
+        # so HA won't treat them as continuous and they clutter the logbook.
+        # Create them disabled-by-default so newly added API keys never show up
+        # unasked until we map them properly.
+        known = key in SENSOR_DEFINITIONS or key.startswith("FRACTION_")
+        self._attr_entity_registry_enabled_default = known
 
     @property
     def name(self):
