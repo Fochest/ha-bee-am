@@ -1,0 +1,880 @@
+{
+  "snapshot_schema": 1,
+  "api": {
+    "version": "2.13.0",
+    "title": "BEAAM API",
+    "openapi": "3.0.0",
+    "operations": [
+      "GET /api/v1/externalPlantControls",
+      "GET /api/v1/externalPlantControls/{epcId}/states",
+      "GET /api/v1/site/configuration",
+      "GET /api/v1/site/state",
+      "GET /api/v1/things/{thingId}/settings",
+      "GET /api/v1/things/{thingId}/states",
+      "POST /api/v1/externalPlantControls/{epcId}/commands",
+      "POST /api/v1/things/{thingId}/commands",
+      "POST /api/v1/things/{thingId}/states",
+      "PUT /api/v1/things/{thingId}/settings"
+    ],
+    "datapoint_keys": 242,
+    "command_keys": 242,
+    "setting_keys": [
+      "BATTERY_CHARGE_FROM_GRID_ALLOWED",
+      "BATTERY_DISCHARGE_TO_GRID_ALLOWED",
+      "EV_SELECTED",
+      "GRID_FEED_IN_PRIORITIZATION_ENABLED",
+      "GRID_FEED_IN_PRIORITIZATION_POWER",
+      "GRID_FEED_IN_PRIORITIZATION_TIMES",
+      "GRIID_CHARGING_ENERGY",
+      "GRIID_EV_DEPARTURE_TIME",
+      "LOCK_TIME",
+      "OPERATING_MODE_EMS",
+      "POWER_THRESHOLD_NORMAL_OP",
+      "POWER_THRESHOLD_RECOMMENDED_OP",
+      "PRIORITY",
+      "RAMP_UP_TIME"
+    ]
+  },
+  "versions": {
+    "currentNtuityOs": "v1.17.0-build3919",
+    "desiredNtuityOs": "v1.17.0-build3919",
+    "localConfigServer": "1.17.0",
+    "firmware": "1.36.0"
+  },
+  "label": "neoom-App zeigte v1.78.0-build8959 am 2026-08-05",
+  "endpoints": {
+    "/api-internal/device/versions": 200,
+    "/api-json": 200,
+    "/api/v1/site/state": 200,
+    "/api/v1/site/configuration": 200,
+    "/api/v1/things/{thing_id}/states": 200,
+    "/api/v1/things/{thing_id}/settings": 200
+  },
+  "energy_flow": {
+    "CHARGING_POINTS_ONLINE": {
+      "value_type": "boolean",
+      "nullable": false,
+      "dataType": "BOOLEAN",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "ENERGY_APPLIANCES": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_CHARGED": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_CHARGING_STATIONS": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_CONSUMED": {
+      "value_type": null,
+      "nullable": true,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_CONSUMED_CALC": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_DISCHARGED": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_EXPORTED": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_HEATING": {
+      "value_type": null,
+      "nullable": true,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_IMPORTED": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "ENERGY_PRODUCED": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "Wh",
+      "controllable": false
+    },
+    "FRACTION_GRID_TO_CONSUMPTION": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "FRACTION_GRID_TO_STORAGE": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "FRACTION_PV_TO_CONSUMPTION": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "FRACTION_PV_TO_GRID": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "FRACTION_PV_TO_STORAGE": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "FRACTION_STORAGE_TO_CONSUMPTION": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "FRACTION_STORAGE_TO_GRID": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "GRID_METERS_ONLINE": {
+      "value_type": "boolean",
+      "nullable": false,
+      "dataType": "BOOLEAN",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "HEATING_ONLINE": {
+      "value_type": null,
+      "nullable": true,
+      "dataType": "BOOLEAN",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "POWER_APPLIANCES": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_CHARGING_STATIONS": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_CONSUMPTION": {
+      "value_type": null,
+      "nullable": true,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_CONSUMPTION_CALC": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_GRID": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_GRID_REMAINING": {
+      "value_type": null,
+      "nullable": true,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_HEATING": {
+      "value_type": null,
+      "nullable": true,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_PRODUCTION": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "POWER_STORAGE": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "W",
+      "controllable": false
+    },
+    "PRODUCERS_ONLINE": {
+      "value_type": "boolean",
+      "nullable": false,
+      "dataType": "BOOLEAN",
+      "unitOfMeasure": "None",
+      "controllable": false
+    },
+    "SELF_SUFFICIENCY": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "%",
+      "controllable": false
+    },
+    "STATE_OF_CHARGE": {
+      "value_type": "number",
+      "nullable": false,
+      "dataType": "NUMBER",
+      "unitOfMeasure": "%",
+      "controllable": false
+    },
+    "STORAGES_ONLINE": {
+      "value_type": "boolean",
+      "nullable": false,
+      "dataType": "BOOLEAN",
+      "unitOfMeasure": "None",
+      "controllable": false
+    }
+  },
+  "thing_types": {
+    "BATTERY": {
+      "count": 1,
+      "states": {
+        "ACTIVE_POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "CHARGED_ENERGY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "CONNECTION": {
+          "value_type": "boolean",
+          "nullable": false,
+          "dataType": "BOOLEAN",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "CONTROLLER_MODE": {
+          "value_type": "string",
+          "nullable": false,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": true
+        },
+        "CURRENT": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "A",
+          "controllable": false
+        },
+        "DISCHARGED_ENERGY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "EPS_MODE_ACTIVE": {
+          "value_type": "boolean",
+          "nullable": false,
+          "dataType": "BOOLEAN",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "ERROR_CODES": {
+          "value_type": "array",
+          "nullable": false,
+          "dataType": "STRING_ARRAY[]",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "HEALTH_STATE": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "%",
+          "controllable": false
+        },
+        "MAX_CURRENT_CHARGE": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "A",
+          "controllable": true
+        },
+        "MAX_CURRENT_DISCHARGE": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "A",
+          "controllable": true
+        },
+        "MIN_SOC": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "%",
+          "controllable": true
+        },
+        "MIN_SOC_BACKUP_ENERGY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "%",
+          "controllable": true
+        },
+        "MIN_SOC_SELF_CONSUMPTION_OPT": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "%",
+          "controllable": true
+        },
+        "OPERATING_MODE": {
+          "value_type": "string",
+          "nullable": false,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": true
+        },
+        "POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "STATE_OF_CHARGE": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "%",
+          "controllable": false
+        },
+        "TARGET_POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": true
+        },
+        "VOLTAGE": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        }
+      },
+      "settings": {
+        "BATTERY_CHARGE_FROM_GRID_ALLOWED": {
+          "value_type": "string",
+          "nullable": false
+        },
+        "BATTERY_DISCHARGE_TO_GRID_ALLOWED": {
+          "value_type": "string",
+          "nullable": false
+        },
+        "OPERATING_MODE_EMS": {
+          "value_type": "string",
+          "nullable": false
+        },
+        "PRIORITY": {
+          "value_type": "string",
+          "nullable": false
+        }
+      }
+    },
+    "CHARGING_POINT_AC": {
+      "count": 1,
+      "states": {
+        "ACTIVE_POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "CHARGING_PROCESS_ENERGY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "CHARGING_TIME": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "s",
+          "controllable": false
+        },
+        "CONNECTION": {
+          "value_type": "boolean",
+          "nullable": false,
+          "dataType": "BOOLEAN",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "CONSUMED_ENERGY_ACTUAL": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "CONSUMED_ENERGY_TOTAL": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "CP_STATE_CODE": {
+          "value_type": "string",
+          "nullable": false,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "CURRENT_P1": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "A",
+          "controllable": false
+        },
+        "CURRENT_P2": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "A",
+          "controllable": false
+        },
+        "CURRENT_P3": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "A",
+          "controllable": false
+        },
+        "ERROR_CODES": {
+          "value_type": "array",
+          "nullable": false,
+          "dataType": "STRING_ARRAY[]",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "EV_STATE_CODE": {
+          "value_type": "string",
+          "nullable": false,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "FIRMWARE_VERSION": {
+          "value_type": null,
+          "nullable": true,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "LAST_RFID_CARD": {
+          "value_type": "string",
+          "nullable": false,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "MAX_POWER_CHARGE": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": true
+        },
+        "MAX_POWER_CHARGE_FALLBACK": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": true
+        },
+        "PHASE_SWITCHING_MODE": {
+          "value_type": "string",
+          "nullable": false,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": true
+        },
+        "SERIAL_NUMBER": {
+          "value_type": null,
+          "nullable": true,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "VOLTAGE_P1": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        },
+        "VOLTAGE_P2": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        },
+        "VOLTAGE_P3": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        }
+      },
+      "settings": {
+        "EV_SELECTED": {
+          "value_type": "string",
+          "nullable": false
+        },
+        "GRIID_CHARGING_ENERGY": {
+          "value_type": null,
+          "nullable": true
+        },
+        "GRIID_EV_DEPARTURE_TIME": {
+          "value_type": null,
+          "nullable": true
+        },
+        "OPERATING_MODE_EMS": {
+          "value_type": "string",
+          "nullable": false
+        },
+        "PRIORITY": {
+          "value_type": "string",
+          "nullable": false
+        }
+      }
+    },
+    "CLIENT_THING": {
+      "count": 1,
+      "states": {
+        "CONNECTION": {
+          "value_type": "boolean",
+          "nullable": false,
+          "dataType": "BOOLEAN",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "FIRMWARE_VERSION": {
+          "value_type": null,
+          "nullable": true,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "OPERATING_MODE": {
+          "value_type": null,
+          "nullable": true,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": true
+        },
+        "SERIAL_NUMBER": {
+          "value_type": null,
+          "nullable": true,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        }
+      },
+      "settings": {}
+    },
+    "ELECTRICITY_METER_AC": {
+      "count": 1,
+      "states": {
+        "ACTIVE_POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "CONNECTION": {
+          "value_type": "boolean",
+          "nullable": false,
+          "dataType": "BOOLEAN",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "INPUT_ENERGY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "OUTPUT_ENERGY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "POWER_P1": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "POWER_P2": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "POWER_P3": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "VOLTAGE_P1": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        },
+        "VOLTAGE_P2": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        },
+        "VOLTAGE_P3": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        }
+      },
+      "settings": {}
+    },
+    "INVERTER": {
+      "count": 1,
+      "states": {
+        "ACTIVE_POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "ACTIVE_POWER_LIMIT": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "%",
+          "controllable": true
+        },
+        "CONNECTION": {
+          "value_type": "boolean",
+          "nullable": false,
+          "dataType": "BOOLEAN",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "ERROR_CODES": {
+          "value_type": "array",
+          "nullable": false,
+          "dataType": "STRING_ARRAY[]",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "FIRMWARE_VERSION": {
+          "value_type": null,
+          "nullable": true,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "FREQUENCY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Hz",
+          "controllable": false
+        },
+        "INPUTS_POWER": {
+          "value_type": "array",
+          "nullable": false,
+          "dataType": "NUMBER_ARRAY[]",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "MAX_POWER_GRID_FEED_IN": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": true
+        },
+        "REACTIVE_POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "VAr",
+          "controllable": false
+        },
+        "SERIAL_NUMBER": {
+          "value_type": null,
+          "nullable": true,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "STATE_CODE": {
+          "value_type": "string",
+          "nullable": false,
+          "dataType": "STRING",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "VOLTAGE_P1": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        },
+        "VOLTAGE_P2": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        },
+        "VOLTAGE_P3": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "V",
+          "controllable": false
+        }
+      },
+      "settings": {}
+    },
+    "PV": {
+      "count": 1,
+      "states": {
+        "ACTIVE_POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "CONNECTIONS": {
+          "value_type": "array",
+          "nullable": false,
+          "dataType": "BOOLEAN_ARRAY[]",
+          "unitOfMeasure": "None",
+          "controllable": false
+        },
+        "CURRENTS": {
+          "value_type": "array",
+          "nullable": false,
+          "dataType": "NUMBER_ARRAY[]",
+          "unitOfMeasure": "A",
+          "controllable": false
+        },
+        "POWER": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "W",
+          "controllable": false
+        },
+        "PRODUCED_ENERGY": {
+          "value_type": "number",
+          "nullable": false,
+          "dataType": "NUMBER",
+          "unitOfMeasure": "Wh",
+          "controllable": false
+        },
+        "VOLTAGES": {
+          "value_type": "array",
+          "nullable": false,
+          "dataType": "NUMBER_ARRAY[]",
+          "unitOfMeasure": "V",
+          "controllable": false
+        }
+      },
+      "settings": {}
+    }
+  }
+}

@@ -1,0 +1,2458 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/site/configuration": {
+      "get": {
+        "operationId": "SiteController_getSiteConfiguration",
+        "parameters": [
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Defaults to json",
+            "schema": {
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteConfigurationDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "site"
+        ]
+      }
+    },
+    "/api/v1/site/state": {
+      "get": {
+        "operationId": "SiteController_getSiteState",
+        "parameters": [
+          {
+            "name": "keys",
+            "required": false,
+            "in": "query",
+            "description": "A comma-separated list of datapoint keys to filter the result set down to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Defaults to json",
+            "schema": {
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteStatesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "site"
+        ]
+      }
+    },
+    "/api/v1/things/{thingId}/states": {
+      "get": {
+        "operationId": "ThingsController_getCurrentStates",
+        "parameters": [
+          {
+            "name": "thingId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keys",
+            "required": false,
+            "in": "query",
+            "description": "A comma-separated list of datapoint keys to filter the result set down to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Defaults to json",
+            "schema": {
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThingStatesDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "things"
+        ]
+      },
+      "post": {
+        "operationId": "ThingsController_updateThingStates",
+        "parameters": [
+          {
+            "name": "thingId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DataPointStateUpdateDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "201": {
+            "description": ""
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "things"
+        ]
+      }
+    },
+    "/api/v1/things/{thingId}/settings": {
+      "get": {
+        "operationId": "ThingsController_getThingSettings",
+        "parameters": [
+          {
+            "name": "thingId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThingSettingsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "things"
+        ]
+      },
+      "put": {
+        "operationId": "ThingsController_updateThingSettings",
+        "parameters": [
+          {
+            "name": "thingId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SettingDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "things"
+        ]
+      }
+    },
+    "/api/v1/things/{thingId}/commands": {
+      "post": {
+        "operationId": "ThingsController_callThingCommands",
+        "parameters": [
+          {
+            "name": "thingId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CommandDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommandResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommandResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "things"
+        ]
+      }
+    },
+    "/api/v1/externalPlantControls": {
+      "get": {
+        "operationId": "ExternalPlantControlsController_getExternalPlantControls",
+        "parameters": [
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Defaults to json",
+            "schema": {
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/ExternalPlantControl"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "externalPlantControls"
+        ]
+      }
+    },
+    "/api/v1/externalPlantControls/{epcId}/states": {
+      "get": {
+        "operationId": "ExternalPlantControlsController_getExternalPlantControlState",
+        "parameters": [
+          {
+            "name": "epcId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keys",
+            "required": false,
+            "in": "query",
+            "description": "A comma-separated list of datapoint keys to filter the result set down to",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "required": false,
+            "in": "query",
+            "description": "Defaults to json",
+            "schema": {
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "livenessUpdate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalPlantControlStatesDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "externalPlantControls"
+        ]
+      }
+    },
+    "/api/v1/externalPlantControls/{epcId}/commands": {
+      "post": {
+        "operationId": "ExternalPlantControlsController_callExternalPlantControlCommand",
+        "parameters": [
+          {
+            "name": "epcId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ExternalPlantControlCommandDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          },
+          "503": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "externalPlantControls"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "BEAAM API",
+    "description": "The local API of the BEAAM",
+    "version": "2.13.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "sk_beaam_****",
+        "type": "http",
+        "description": "sk_beaam_****"
+      },
+      "basic": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Use any user with the token (sk_beaam_****) as the password"
+      }
+    },
+    "schemas": {
+      "DataPoint": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "CONNECTION",
+              "CONNECTIONS",
+              "STATE_CODE",
+              "ERROR_CODES",
+              "ON_OFF",
+              "OPERATING_MODE",
+              "OPERATING_MODES",
+              "CONSUMED_ENERGY",
+              "PRODUCED_ENERGY",
+              "INPUT_ENERGY",
+              "OUTPUT_ENERGY",
+              "EXCESS_POWER",
+              "RATED_POWER",
+              "TARGET_POWER",
+              "VOLTAGE",
+              "CURRENT",
+              "POWER",
+              "ACTIVE_POWER",
+              "REACTIVE_POWER",
+              "APPARENT_POWER",
+              "POWER_FACTOR",
+              "FREQUENCY",
+              "POWER_P1",
+              "POWER_P2",
+              "POWER_P3",
+              "VOLTAGE_P1",
+              "VOLTAGE_P2",
+              "VOLTAGE_P3",
+              "CURRENT_P1",
+              "CURRENT_P2",
+              "CURRENT_P3",
+              "STATE_OF_CHARGE",
+              "FLOW_TEMPERATURE",
+              "RETURN_TEMPERATURE",
+              "TARGET_TEMPERATURE",
+              "MAX_TEMPERATURE",
+              "VOLUME_FLOW_RATE",
+              "FLOWED_VOLUME",
+              "REMOTE_CONTROL_ACTIVE",
+              "CHARGED_ENERGY",
+              "DISCHARGED_ENERGY",
+              "CAPACITY",
+              "CHARGING_CYCLES",
+              "HEALTH_STATE",
+              "CELL_TEMPERATURE",
+              "MAX_CELL_TEMPERATURE",
+              "MIN_CELL_TEMPERATURE",
+              "MAX_CELL_VOLTAGE",
+              "MIN_CELL_VOLTAGE",
+              "MAX_CELL_TEMPERATURE_NUMBER",
+              "MIN_CELL_TEMPERATURE_NUMBER",
+              "MAX_CELL_VOLTAGE_NUMBER",
+              "MIN_CELL_VOLTAGE_NUMBER",
+              "RACK_TEMPERATURES",
+              "RACK_HUMIDITIES",
+              "HEATSINK_TEMPERATURES",
+              "MAX_SOC",
+              "MIN_SOC",
+              "MAX_POWER",
+              "MAX_POWER_CHARGE",
+              "MAX_POWER_DISCHARGE",
+              "MAX_CURRENT_DISCHARGE",
+              "MIN_SOC_SELF_CONSUMPTION_OPT",
+              "MIN_SOC_PEAK_SHAVING_OPT",
+              "MIN_SOC_BLACKOUT",
+              "MIN_SOC_BACKUP_ENERGY",
+              "MIN_SOC_FEED_IN_OPT",
+              "MAX_GRID_POWER_FEED_IN_OPT",
+              "MAX_GRID_POWER_PEAK_SHAVING",
+              "LOAD_SHEDDING_LEVELS",
+              "EPS_MODE_ACTIVE",
+              "INSTALLED_CAPACITY",
+              "INSTALLED_POWER",
+              "BATTERY_BALANCING_STATE",
+              "COOLING_UNIT_STATE",
+              "COOLING_UNIT_TEMPERATURE",
+              "COOLING_UNIT_PRESSURE",
+              "DESIRED_SOC",
+              "POWER_CONTROL_PHASE_EMS",
+              "TEMPERATURES",
+              "HOT_WATER_OUTLET_TEMPERATURE",
+              "HEATING_OUTLET_TEMPERATURES",
+              "CP_STATE_CODE",
+              "EV_STATE_CODE",
+              "START_STOP_CHARGING",
+              "STATION_AVAILABILITY",
+              "CONSUMED_ENERGY_TOTAL",
+              "CONSUMED_ENERGY_ACTUAL",
+              "CHARGING_TIME",
+              "LAST_RFID_CARD",
+              "MAX_CURRENT_CHARGE",
+              "CHARGING_PROCESS_ENERGY",
+              "ENABLE_CHARGING",
+              "PAUSE_CHARGING",
+              "CHARGING_PROCESS_ID",
+              "CHARGING_PROCESS_START_TIME",
+              "MAX_POWER_CHARGE_FALLBACK",
+              "MAX_CURRENT_CHARGE_FALLBACK",
+              "PHASE_SWITCHING_MODE",
+              "VOLTAGE_P1_P2",
+              "VOLTAGE_P2_P3",
+              "VOLTAGE_P3_P1",
+              "HEATING_ENERGY",
+              "COOLING_ENERGY",
+              "FUEL_LEVEL",
+              "FUEL_CONSUMPTION",
+              "COOLANT_TEMPERATURE",
+              "OIL_TEMPERATURE",
+              "OIL_PRESSURE",
+              "COP",
+              "OPERATING_HOURS",
+              "ELECTRICAL_ENERGY",
+              "THERMAL_ENERGY",
+              "ELECTRICAL_POWER",
+              "THERMAL_POWER",
+              "REFRIGERANT_FLOW_TEMPERATURE",
+              "REFRIGERANT_RETURN_TEMPERATURE",
+              "ENVIRONMENTAL_INLET_TEMPERATURE",
+              "ENVIRONMENTAL_OUTLET_TEMPERATURE",
+              "ROOM_TEMPERATURE",
+              "TARGET_ROOM_TEMPERATURE",
+              "HC_OUTDOOR_TEMPERATURE",
+              "HC_PARALLEL_SHIFT",
+              "HC_SLOPE",
+              "OPERATING_MODE_SG_READY",
+              "LOCK_UNTIL",
+              "INPUTS_POWER",
+              "INPUT_POWER",
+              "ACTIVE_POWER_LIMIT",
+              "MAX_POWER_GRID_FEED_IN",
+              "VOLTAGES",
+              "CURRENTS",
+              "VALUE",
+              "CONTROLLER_MODE",
+              "TARGET_LOCAL_POWER_OFFSET",
+              "BATTERY_BALANCING_MODE",
+              "OVERALL_GRID_CONNECTED",
+              "OVERALL_SYSTEM_AVAILABLE",
+              "OVERALL_SYSTEM_RUNNING",
+              "OVERALL_SYSTEM_FAILURE",
+              "OVERALL_ACTIVE_POWER",
+              "OVERALL_LOCAL_POWER",
+              "OVERALL_AVAILABLE_POWER_CHARGE",
+              "OVERALL_AVAILABLE_POWER_DISCHARGE",
+              "OVERALL_INSTALLED_CAPACITY",
+              "OVERALL_AVAILABLE_CAPACITY",
+              "OVERALL_STATE_OF_CHARGE",
+              "OVERALL_MAX_SOC",
+              "OVERALL_MIN_SOC",
+              "OVERALL_REMAINING_ENERGY_CHARGE",
+              "OVERALL_REMAINING_ENERGY_DISCHARGE",
+              "OVERALL_TARGET_POWER_SETPOINT",
+              "OPERATING_MODE_REACTIVE",
+              "TARGET_POWER_REACTIVE",
+              "TARGET_POWER_FACTOR",
+              "SLAVE_TARGET_POWER",
+              "SLAVE_TARGET_POWER_REACTIVE",
+              "SLAVE_TARGET_POWER_FACTOR",
+              "SLAVE_REMOTE_CONTROL_ACTIVE",
+              "THIRDPARTY_TARGET_POWER",
+              "THIRDPARTY_TARGET_POWER_REACTIVE",
+              "THIRDPARTY_TARGET_POWER_FACTOR",
+              "THIRDPARTY_REMOTE_CONTROL_ACTIVE",
+              "SELF_SUFFICIENCY",
+              "POWER_PRODUCTION",
+              "POWER_CONSUMPTION",
+              "POWER_CONSUMPTION_CALC",
+              "POWER_GRID",
+              "POWER_GRID_REMAINING",
+              "POWER_STORAGE",
+              "ENERGY_PRODUCED",
+              "ENERGY_CONSUMED",
+              "ENERGY_CONSUMED_CALC",
+              "ENERGY_IMPORTED",
+              "ENERGY_EXPORTED",
+              "ENERGY_CHARGED",
+              "ENERGY_DISCHARGED",
+              "POWER_APPLIANCES",
+              "POWER_CHARGING_STATIONS",
+              "POWER_HEATING",
+              "ENERGY_APPLIANCES",
+              "ENERGY_CHARGING_STATIONS",
+              "ENERGY_HEATING",
+              "FRACTION_PV_TO_CONSUMPTION",
+              "FRACTION_PV_TO_STORAGE",
+              "FRACTION_PV_TO_GRID",
+              "FRACTION_GRID_TO_CONSUMPTION",
+              "FRACTION_GRID_TO_STORAGE",
+              "FRACTION_STORAGE_TO_CONSUMPTION",
+              "FRACTION_STORAGE_TO_GRID",
+              "PRODUCERS_ONLINE",
+              "STORAGES_ONLINE",
+              "GRID_METERS_ONLINE",
+              "CHARGING_POINTS_ONLINE",
+              "HEATING_ONLINE",
+              "GRID_CONNECTION_UTILIZATION",
+              "CHARGING_POINTS_CHARGING",
+              "CHARGING_POINTS_WAITING",
+              "CHARGING_POINTS_PRIORITIZED",
+              "CHARGING_POINTS_FAULTY",
+              "CHARGING_POINTS_AVAILABLE",
+              "CHARGING_POINTS_UNAVAILABLE",
+              "CHARGING_POINTS_CONNECTED",
+              "CHARGING_POINTS_DISCONNECTED",
+              "ENERGY_CHARGED_CHARGING_POINTS",
+              "ENERGY_DISCHARGED_CHARGING_POINTS",
+              "POWER_REMAINING_CMS",
+              "POWER_REMAINING_CMS_P1",
+              "POWER_REMAINING_CMS_P2",
+              "POWER_REMAINING_CMS_P3",
+              "POWER_CHARGING_POINTS",
+              "POWER_CHARGING_POINTS_P1",
+              "POWER_CHARGING_POINTS_P2",
+              "POWER_CHARGING_POINTS_P3",
+              "POWER_CHARGING_POINTS_AC",
+              "POWER_CHARGING_POINTS_DC",
+              "POWER_LIMIT_CMS",
+              "GRID_LIMITATION_BITMASK",
+              "CONTROL_STATE",
+              "RELAY",
+              "DIGITAL_INPUT",
+              "DIGITAL_OUTPUT",
+              "ANALOG_INPUT",
+              "ANALOG_OUTPUT",
+              "SERIAL_NUMBER",
+              "FIRMWARE_VERSION",
+              "CONNECTION_TRADER",
+              "CONNECTION_TRADER_BACKEND",
+              "CONNECTION_SYSTEM",
+              "POWER_CONTROL_MODE",
+              "CHARGING_POWER",
+              "DISCHARGING_POWER",
+              "LOCAL_POWER_SETPOINT",
+              "MAX_SOC_AVAILABLE",
+              "MIN_SOC_AVAILABLE",
+              "GRID_CONNECTED",
+              "SYSTEM_AVAILABLE",
+              "SYSTEM_RUNNING",
+              "SYSTEM_FAILURE",
+              "TARGET_POWER_SETPOINT",
+              "REMAINING_ENERGY_CHARGE",
+              "REMAINING_ENERGY_DISCHARGE"
+            ],
+            "type": "string"
+          },
+          "dataType": {
+            "enum": [
+              "BOOLEAN",
+              "NUMBER",
+              "STRING",
+              "BOOLEAN_ARRAY[]",
+              "NUMBER_ARRAY[]",
+              "STRING_ARRAY[]"
+            ],
+            "type": "string"
+          },
+          "unitOfMeasure": {
+            "enum": [
+              "None",
+              "Wh",
+              "W",
+              "V",
+              "A",
+              "VAr",
+              "VA",
+              "Hz",
+              "%",
+              "\u00b0C",
+              "m3/s",
+              "m3",
+              "s",
+              "Vr",
+              "Ar",
+              "l",
+              "l/h",
+              "Pa",
+              "h",
+              "K"
+            ],
+            "type": "string"
+          },
+          "controllable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "key",
+          "dataType",
+          "unitOfMeasure",
+          "controllable"
+        ]
+      },
+      "Thing": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "BATTERY",
+              "BUFFER_TANK",
+              "HOT_WATER_TANK",
+              "CHARGING_POINT_AC",
+              "CHARGING_POINT_DC",
+              "CLIENT_THING",
+              "CONSUMER",
+              "ELECTRICITY_METER_AC",
+              "ELECTRICITY_METER_DC",
+              "FUEL_GENERATOR",
+              "HEATING_CIRCUIT",
+              "HEATING_ROD",
+              "HEAT_PUMP",
+              "INVERTER",
+              "PV",
+              "SIMPLE_THING",
+              "THERMAL_METER"
+            ],
+            "type": "string"
+          },
+          "dataPoints": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DataPoint"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "dataPoints"
+        ]
+      },
+      "EnergyFlowMeta": {
+        "type": "object",
+        "properties": {
+          "dataPoints": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DataPoint"
+            }
+          }
+        },
+        "required": [
+          "dataPoints"
+        ]
+      },
+      "ExternalPlantControlDataPoint": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "CONNECTION_TRADER",
+              "CONNECTION_TRADER_BACKEND",
+              "POWER_CONTROL_MODE",
+              "TARGET_POWER",
+              "TARGET_LOCAL_POWER_OFFSET",
+              "CONNECTION_SYSTEM",
+              "GRID_CONNECTED",
+              "SYSTEM_AVAILABLE",
+              "SYSTEM_RUNNING",
+              "SYSTEM_FAILURE",
+              "ACTIVE_POWER",
+              "CHARGING_POWER",
+              "DISCHARGING_POWER",
+              "TARGET_POWER_SETPOINT",
+              "LOCAL_POWER_SETPOINT",
+              "MAX_POWER_CHARGE",
+              "MAX_POWER_DISCHARGE",
+              "STATE_OF_CHARGE",
+              "MAX_SOC_AVAILABLE",
+              "MIN_SOC_AVAILABLE",
+              "REMAINING_ENERGY_CHARGE",
+              "REMAINING_ENERGY_DISCHARGE"
+            ],
+            "type": "string"
+          },
+          "dataType": {
+            "enum": [
+              "BOOLEAN",
+              "NUMBER",
+              "STRING",
+              "BOOLEAN_ARRAY[]",
+              "NUMBER_ARRAY[]",
+              "STRING_ARRAY[]"
+            ],
+            "type": "string"
+          },
+          "unitOfMeasure": {
+            "enum": [
+              "None",
+              "Wh",
+              "W",
+              "V",
+              "A",
+              "VAr",
+              "VA",
+              "Hz",
+              "%",
+              "\u00b0C",
+              "m3/s",
+              "m3",
+              "s",
+              "Vr",
+              "Ar",
+              "l",
+              "l/h",
+              "Pa",
+              "h",
+              "K"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "dataType",
+          "unitOfMeasure"
+        ]
+      },
+      "GenericDataIngest": {
+        "type": "object",
+        "properties": {}
+      },
+      "ExternalPlantControl": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "DIRECT_MARKETING",
+              "FLEXIBILITY_MARKETING"
+            ],
+            "type": "string"
+          },
+          "dataPoints": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ExternalPlantControlDataPoint"
+            }
+          },
+          "extensionThingId": {
+            "type": "string"
+          },
+          "genericDataIngest": {
+            "$ref": "#/components/schemas/GenericDataIngest"
+          }
+        },
+        "required": [
+          "type",
+          "dataPoints"
+        ]
+      },
+      "GeoCoordinates": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
+      },
+      "SiteInfo": {
+        "type": "object",
+        "properties": {
+          "geoCoordinates": {
+            "$ref": "#/components/schemas/GeoCoordinates"
+          }
+        },
+        "required": [
+          "geoCoordinates"
+        ]
+      },
+      "SiteConfigurationDto": {
+        "type": "object",
+        "properties": {
+          "things": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Thing"
+            }
+          },
+          "externalPlantControls": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ExternalPlantControl"
+            }
+          },
+          "siteId": {
+            "type": "string"
+          },
+          "versionTimestamp": {
+            "type": "number"
+          },
+          "siteInfo": {
+            "$ref": "#/components/schemas/SiteInfo"
+          },
+          "energyFlow": {
+            "$ref": "#/components/schemas/EnergyFlowMeta"
+          }
+        },
+        "required": [
+          "things",
+          "externalPlantControls",
+          "siteId",
+          "versionTimestamp",
+          "siteInfo",
+          "energyFlow"
+        ]
+      },
+      "DataPointState": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "CONNECTION",
+              "CONNECTIONS",
+              "STATE_CODE",
+              "ERROR_CODES",
+              "ON_OFF",
+              "OPERATING_MODE",
+              "OPERATING_MODES",
+              "CONSUMED_ENERGY",
+              "PRODUCED_ENERGY",
+              "INPUT_ENERGY",
+              "OUTPUT_ENERGY",
+              "EXCESS_POWER",
+              "RATED_POWER",
+              "TARGET_POWER",
+              "VOLTAGE",
+              "CURRENT",
+              "POWER",
+              "ACTIVE_POWER",
+              "REACTIVE_POWER",
+              "APPARENT_POWER",
+              "POWER_FACTOR",
+              "FREQUENCY",
+              "POWER_P1",
+              "POWER_P2",
+              "POWER_P3",
+              "VOLTAGE_P1",
+              "VOLTAGE_P2",
+              "VOLTAGE_P3",
+              "CURRENT_P1",
+              "CURRENT_P2",
+              "CURRENT_P3",
+              "STATE_OF_CHARGE",
+              "FLOW_TEMPERATURE",
+              "RETURN_TEMPERATURE",
+              "TARGET_TEMPERATURE",
+              "MAX_TEMPERATURE",
+              "VOLUME_FLOW_RATE",
+              "FLOWED_VOLUME",
+              "REMOTE_CONTROL_ACTIVE",
+              "CHARGED_ENERGY",
+              "DISCHARGED_ENERGY",
+              "CAPACITY",
+              "CHARGING_CYCLES",
+              "HEALTH_STATE",
+              "CELL_TEMPERATURE",
+              "MAX_CELL_TEMPERATURE",
+              "MIN_CELL_TEMPERATURE",
+              "MAX_CELL_VOLTAGE",
+              "MIN_CELL_VOLTAGE",
+              "MAX_CELL_TEMPERATURE_NUMBER",
+              "MIN_CELL_TEMPERATURE_NUMBER",
+              "MAX_CELL_VOLTAGE_NUMBER",
+              "MIN_CELL_VOLTAGE_NUMBER",
+              "RACK_TEMPERATURES",
+              "RACK_HUMIDITIES",
+              "HEATSINK_TEMPERATURES",
+              "MAX_SOC",
+              "MIN_SOC",
+              "MAX_POWER",
+              "MAX_POWER_CHARGE",
+              "MAX_POWER_DISCHARGE",
+              "MAX_CURRENT_DISCHARGE",
+              "MIN_SOC_SELF_CONSUMPTION_OPT",
+              "MIN_SOC_PEAK_SHAVING_OPT",
+              "MIN_SOC_BLACKOUT",
+              "MIN_SOC_BACKUP_ENERGY",
+              "MIN_SOC_FEED_IN_OPT",
+              "MAX_GRID_POWER_FEED_IN_OPT",
+              "MAX_GRID_POWER_PEAK_SHAVING",
+              "LOAD_SHEDDING_LEVELS",
+              "EPS_MODE_ACTIVE",
+              "INSTALLED_CAPACITY",
+              "INSTALLED_POWER",
+              "BATTERY_BALANCING_STATE",
+              "COOLING_UNIT_STATE",
+              "COOLING_UNIT_TEMPERATURE",
+              "COOLING_UNIT_PRESSURE",
+              "DESIRED_SOC",
+              "POWER_CONTROL_PHASE_EMS",
+              "TEMPERATURES",
+              "HOT_WATER_OUTLET_TEMPERATURE",
+              "HEATING_OUTLET_TEMPERATURES",
+              "CP_STATE_CODE",
+              "EV_STATE_CODE",
+              "START_STOP_CHARGING",
+              "STATION_AVAILABILITY",
+              "CONSUMED_ENERGY_TOTAL",
+              "CONSUMED_ENERGY_ACTUAL",
+              "CHARGING_TIME",
+              "LAST_RFID_CARD",
+              "MAX_CURRENT_CHARGE",
+              "CHARGING_PROCESS_ENERGY",
+              "ENABLE_CHARGING",
+              "PAUSE_CHARGING",
+              "CHARGING_PROCESS_ID",
+              "CHARGING_PROCESS_START_TIME",
+              "MAX_POWER_CHARGE_FALLBACK",
+              "MAX_CURRENT_CHARGE_FALLBACK",
+              "PHASE_SWITCHING_MODE",
+              "VOLTAGE_P1_P2",
+              "VOLTAGE_P2_P3",
+              "VOLTAGE_P3_P1",
+              "HEATING_ENERGY",
+              "COOLING_ENERGY",
+              "FUEL_LEVEL",
+              "FUEL_CONSUMPTION",
+              "COOLANT_TEMPERATURE",
+              "OIL_TEMPERATURE",
+              "OIL_PRESSURE",
+              "COP",
+              "OPERATING_HOURS",
+              "ELECTRICAL_ENERGY",
+              "THERMAL_ENERGY",
+              "ELECTRICAL_POWER",
+              "THERMAL_POWER",
+              "REFRIGERANT_FLOW_TEMPERATURE",
+              "REFRIGERANT_RETURN_TEMPERATURE",
+              "ENVIRONMENTAL_INLET_TEMPERATURE",
+              "ENVIRONMENTAL_OUTLET_TEMPERATURE",
+              "ROOM_TEMPERATURE",
+              "TARGET_ROOM_TEMPERATURE",
+              "HC_OUTDOOR_TEMPERATURE",
+              "HC_PARALLEL_SHIFT",
+              "HC_SLOPE",
+              "OPERATING_MODE_SG_READY",
+              "LOCK_UNTIL",
+              "INPUTS_POWER",
+              "INPUT_POWER",
+              "ACTIVE_POWER_LIMIT",
+              "MAX_POWER_GRID_FEED_IN",
+              "VOLTAGES",
+              "CURRENTS",
+              "VALUE",
+              "CONTROLLER_MODE",
+              "TARGET_LOCAL_POWER_OFFSET",
+              "BATTERY_BALANCING_MODE",
+              "OVERALL_GRID_CONNECTED",
+              "OVERALL_SYSTEM_AVAILABLE",
+              "OVERALL_SYSTEM_RUNNING",
+              "OVERALL_SYSTEM_FAILURE",
+              "OVERALL_ACTIVE_POWER",
+              "OVERALL_LOCAL_POWER",
+              "OVERALL_AVAILABLE_POWER_CHARGE",
+              "OVERALL_AVAILABLE_POWER_DISCHARGE",
+              "OVERALL_INSTALLED_CAPACITY",
+              "OVERALL_AVAILABLE_CAPACITY",
+              "OVERALL_STATE_OF_CHARGE",
+              "OVERALL_MAX_SOC",
+              "OVERALL_MIN_SOC",
+              "OVERALL_REMAINING_ENERGY_CHARGE",
+              "OVERALL_REMAINING_ENERGY_DISCHARGE",
+              "OVERALL_TARGET_POWER_SETPOINT",
+              "OPERATING_MODE_REACTIVE",
+              "TARGET_POWER_REACTIVE",
+              "TARGET_POWER_FACTOR",
+              "SLAVE_TARGET_POWER",
+              "SLAVE_TARGET_POWER_REACTIVE",
+              "SLAVE_TARGET_POWER_FACTOR",
+              "SLAVE_REMOTE_CONTROL_ACTIVE",
+              "THIRDPARTY_TARGET_POWER",
+              "THIRDPARTY_TARGET_POWER_REACTIVE",
+              "THIRDPARTY_TARGET_POWER_FACTOR",
+              "THIRDPARTY_REMOTE_CONTROL_ACTIVE",
+              "SELF_SUFFICIENCY",
+              "POWER_PRODUCTION",
+              "POWER_CONSUMPTION",
+              "POWER_CONSUMPTION_CALC",
+              "POWER_GRID",
+              "POWER_GRID_REMAINING",
+              "POWER_STORAGE",
+              "ENERGY_PRODUCED",
+              "ENERGY_CONSUMED",
+              "ENERGY_CONSUMED_CALC",
+              "ENERGY_IMPORTED",
+              "ENERGY_EXPORTED",
+              "ENERGY_CHARGED",
+              "ENERGY_DISCHARGED",
+              "POWER_APPLIANCES",
+              "POWER_CHARGING_STATIONS",
+              "POWER_HEATING",
+              "ENERGY_APPLIANCES",
+              "ENERGY_CHARGING_STATIONS",
+              "ENERGY_HEATING",
+              "FRACTION_PV_TO_CONSUMPTION",
+              "FRACTION_PV_TO_STORAGE",
+              "FRACTION_PV_TO_GRID",
+              "FRACTION_GRID_TO_CONSUMPTION",
+              "FRACTION_GRID_TO_STORAGE",
+              "FRACTION_STORAGE_TO_CONSUMPTION",
+              "FRACTION_STORAGE_TO_GRID",
+              "PRODUCERS_ONLINE",
+              "STORAGES_ONLINE",
+              "GRID_METERS_ONLINE",
+              "CHARGING_POINTS_ONLINE",
+              "HEATING_ONLINE",
+              "GRID_CONNECTION_UTILIZATION",
+              "CHARGING_POINTS_CHARGING",
+              "CHARGING_POINTS_WAITING",
+              "CHARGING_POINTS_PRIORITIZED",
+              "CHARGING_POINTS_FAULTY",
+              "CHARGING_POINTS_AVAILABLE",
+              "CHARGING_POINTS_UNAVAILABLE",
+              "CHARGING_POINTS_CONNECTED",
+              "CHARGING_POINTS_DISCONNECTED",
+              "ENERGY_CHARGED_CHARGING_POINTS",
+              "ENERGY_DISCHARGED_CHARGING_POINTS",
+              "POWER_REMAINING_CMS",
+              "POWER_REMAINING_CMS_P1",
+              "POWER_REMAINING_CMS_P2",
+              "POWER_REMAINING_CMS_P3",
+              "POWER_CHARGING_POINTS",
+              "POWER_CHARGING_POINTS_P1",
+              "POWER_CHARGING_POINTS_P2",
+              "POWER_CHARGING_POINTS_P3",
+              "POWER_CHARGING_POINTS_AC",
+              "POWER_CHARGING_POINTS_DC",
+              "POWER_LIMIT_CMS",
+              "GRID_LIMITATION_BITMASK",
+              "CONTROL_STATE",
+              "RELAY",
+              "DIGITAL_INPUT",
+              "DIGITAL_OUTPUT",
+              "ANALOG_INPUT",
+              "ANALOG_OUTPUT",
+              "SERIAL_NUMBER",
+              "FIRMWARE_VERSION",
+              "CONNECTION_TRADER",
+              "CONNECTION_TRADER_BACKEND",
+              "CONNECTION_SYSTEM",
+              "POWER_CONTROL_MODE",
+              "CHARGING_POWER",
+              "DISCHARGING_POWER",
+              "LOCAL_POWER_SETPOINT",
+              "MAX_SOC_AVAILABLE",
+              "MIN_SOC_AVAILABLE",
+              "GRID_CONNECTED",
+              "SYSTEM_AVAILABLE",
+              "SYSTEM_RUNNING",
+              "SYSTEM_FAILURE",
+              "TARGET_POWER_SETPOINT",
+              "REMAINING_ENERGY_CHARGE",
+              "REMAINING_ENERGY_DISCHARGE"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "dataPointId": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "value",
+          "dataPointId",
+          "ts"
+        ]
+      },
+      "EnergyFlowState": {
+        "type": "object",
+        "properties": {
+          "states": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointState"
+            }
+          }
+        },
+        "required": [
+          "states"
+        ]
+      },
+      "SiteStatesDto": {
+        "type": "object",
+        "properties": {
+          "energyFlow": {
+            "$ref": "#/components/schemas/EnergyFlowState"
+          }
+        },
+        "required": [
+          "energyFlow"
+        ]
+      },
+      "ThingStatesDto": {
+        "type": "object",
+        "properties": {
+          "states": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointState"
+            }
+          },
+          "thingId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "states",
+          "thingId"
+        ]
+      },
+      "SettingDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "OPERATING_MODE_EMS",
+              "PRIORITY",
+              "POWER_THRESHOLD_RECOMMENDED_OP",
+              "POWER_THRESHOLD_NORMAL_OP",
+              "GRID_FEED_IN_PRIORITIZATION_ENABLED",
+              "GRID_FEED_IN_PRIORITIZATION_POWER",
+              "GRID_FEED_IN_PRIORITIZATION_TIMES",
+              "LOCK_TIME",
+              "RAMP_UP_TIME",
+              "GRIID_CHARGING_ENERGY",
+              "GRIID_EV_DEPARTURE_TIME",
+              "EV_SELECTED",
+              "BATTERY_CHARGE_FROM_GRID_ALLOWED",
+              "BATTERY_DISCHARGE_TO_GRID_ALLOWED"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "ThingSettingsDto": {
+        "type": "object",
+        "properties": {
+          "thingId": {
+            "type": "string"
+          },
+          "settings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SettingDto"
+            }
+          }
+        },
+        "required": [
+          "thingId",
+          "settings"
+        ]
+      },
+      "DataPointStateUpdateDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "CONNECTIONS",
+              "STATE_CODE",
+              "ERROR_CODES",
+              "ON_OFF",
+              "OPERATING_MODE",
+              "OPERATING_MODES",
+              "CONSUMED_ENERGY",
+              "PRODUCED_ENERGY",
+              "INPUT_ENERGY",
+              "OUTPUT_ENERGY",
+              "EXCESS_POWER",
+              "RATED_POWER",
+              "TARGET_POWER",
+              "VOLTAGE",
+              "CURRENT",
+              "POWER",
+              "ACTIVE_POWER",
+              "REACTIVE_POWER",
+              "APPARENT_POWER",
+              "POWER_FACTOR",
+              "FREQUENCY",
+              "POWER_P1",
+              "POWER_P2",
+              "POWER_P3",
+              "VOLTAGE_P1",
+              "VOLTAGE_P2",
+              "VOLTAGE_P3",
+              "CURRENT_P1",
+              "CURRENT_P2",
+              "CURRENT_P3",
+              "STATE_OF_CHARGE",
+              "FLOW_TEMPERATURE",
+              "RETURN_TEMPERATURE",
+              "TARGET_TEMPERATURE",
+              "MAX_TEMPERATURE",
+              "VOLUME_FLOW_RATE",
+              "FLOWED_VOLUME",
+              "REMOTE_CONTROL_ACTIVE",
+              "CHARGED_ENERGY",
+              "DISCHARGED_ENERGY",
+              "CAPACITY",
+              "CHARGING_CYCLES",
+              "HEALTH_STATE",
+              "CELL_TEMPERATURE",
+              "MAX_CELL_TEMPERATURE",
+              "MIN_CELL_TEMPERATURE",
+              "MAX_CELL_VOLTAGE",
+              "MIN_CELL_VOLTAGE",
+              "MAX_CELL_TEMPERATURE_NUMBER",
+              "MIN_CELL_TEMPERATURE_NUMBER",
+              "MAX_CELL_VOLTAGE_NUMBER",
+              "MIN_CELL_VOLTAGE_NUMBER",
+              "RACK_TEMPERATURES",
+              "RACK_HUMIDITIES",
+              "HEATSINK_TEMPERATURES",
+              "MAX_SOC",
+              "MIN_SOC",
+              "MAX_POWER",
+              "MAX_POWER_CHARGE",
+              "MAX_POWER_DISCHARGE",
+              "MAX_CURRENT_DISCHARGE",
+              "MIN_SOC_SELF_CONSUMPTION_OPT",
+              "MIN_SOC_PEAK_SHAVING_OPT",
+              "MIN_SOC_BLACKOUT",
+              "MIN_SOC_BACKUP_ENERGY",
+              "MIN_SOC_FEED_IN_OPT",
+              "MAX_GRID_POWER_FEED_IN_OPT",
+              "MAX_GRID_POWER_PEAK_SHAVING",
+              "LOAD_SHEDDING_LEVELS",
+              "EPS_MODE_ACTIVE",
+              "INSTALLED_CAPACITY",
+              "INSTALLED_POWER",
+              "BATTERY_BALANCING_STATE",
+              "COOLING_UNIT_STATE",
+              "COOLING_UNIT_TEMPERATURE",
+              "COOLING_UNIT_PRESSURE",
+              "DESIRED_SOC",
+              "POWER_CONTROL_PHASE_EMS",
+              "TEMPERATURES",
+              "HOT_WATER_OUTLET_TEMPERATURE",
+              "HEATING_OUTLET_TEMPERATURES",
+              "CP_STATE_CODE",
+              "EV_STATE_CODE",
+              "START_STOP_CHARGING",
+              "STATION_AVAILABILITY",
+              "CONSUMED_ENERGY_TOTAL",
+              "CONSUMED_ENERGY_ACTUAL",
+              "CHARGING_TIME",
+              "LAST_RFID_CARD",
+              "MAX_CURRENT_CHARGE",
+              "CHARGING_PROCESS_ENERGY",
+              "ENABLE_CHARGING",
+              "PAUSE_CHARGING",
+              "CHARGING_PROCESS_ID",
+              "CHARGING_PROCESS_START_TIME",
+              "MAX_POWER_CHARGE_FALLBACK",
+              "MAX_CURRENT_CHARGE_FALLBACK",
+              "PHASE_SWITCHING_MODE",
+              "VOLTAGE_P1_P2",
+              "VOLTAGE_P2_P3",
+              "VOLTAGE_P3_P1",
+              "HEATING_ENERGY",
+              "COOLING_ENERGY",
+              "FUEL_LEVEL",
+              "FUEL_CONSUMPTION",
+              "COOLANT_TEMPERATURE",
+              "OIL_TEMPERATURE",
+              "OIL_PRESSURE",
+              "COP",
+              "OPERATING_HOURS",
+              "ELECTRICAL_ENERGY",
+              "THERMAL_ENERGY",
+              "ELECTRICAL_POWER",
+              "THERMAL_POWER",
+              "REFRIGERANT_FLOW_TEMPERATURE",
+              "REFRIGERANT_RETURN_TEMPERATURE",
+              "ENVIRONMENTAL_INLET_TEMPERATURE",
+              "ENVIRONMENTAL_OUTLET_TEMPERATURE",
+              "ROOM_TEMPERATURE",
+              "TARGET_ROOM_TEMPERATURE",
+              "HC_OUTDOOR_TEMPERATURE",
+              "HC_PARALLEL_SHIFT",
+              "HC_SLOPE",
+              "OPERATING_MODE_SG_READY",
+              "LOCK_UNTIL",
+              "INPUTS_POWER",
+              "INPUT_POWER",
+              "ACTIVE_POWER_LIMIT",
+              "MAX_POWER_GRID_FEED_IN",
+              "VOLTAGES",
+              "CURRENTS",
+              "VALUE",
+              "CONTROLLER_MODE",
+              "TARGET_LOCAL_POWER_OFFSET",
+              "BATTERY_BALANCING_MODE",
+              "OVERALL_GRID_CONNECTED",
+              "OVERALL_SYSTEM_AVAILABLE",
+              "OVERALL_SYSTEM_RUNNING",
+              "OVERALL_SYSTEM_FAILURE",
+              "OVERALL_ACTIVE_POWER",
+              "OVERALL_LOCAL_POWER",
+              "OVERALL_AVAILABLE_POWER_CHARGE",
+              "OVERALL_AVAILABLE_POWER_DISCHARGE",
+              "OVERALL_INSTALLED_CAPACITY",
+              "OVERALL_AVAILABLE_CAPACITY",
+              "OVERALL_STATE_OF_CHARGE",
+              "OVERALL_MAX_SOC",
+              "OVERALL_MIN_SOC",
+              "OVERALL_REMAINING_ENERGY_CHARGE",
+              "OVERALL_REMAINING_ENERGY_DISCHARGE",
+              "OVERALL_TARGET_POWER_SETPOINT",
+              "OPERATING_MODE_REACTIVE",
+              "TARGET_POWER_REACTIVE",
+              "TARGET_POWER_FACTOR",
+              "SLAVE_TARGET_POWER",
+              "SLAVE_TARGET_POWER_REACTIVE",
+              "SLAVE_TARGET_POWER_FACTOR",
+              "SLAVE_REMOTE_CONTROL_ACTIVE",
+              "THIRDPARTY_TARGET_POWER",
+              "THIRDPARTY_TARGET_POWER_REACTIVE",
+              "THIRDPARTY_TARGET_POWER_FACTOR",
+              "THIRDPARTY_REMOTE_CONTROL_ACTIVE",
+              "SELF_SUFFICIENCY",
+              "POWER_PRODUCTION",
+              "POWER_CONSUMPTION",
+              "POWER_CONSUMPTION_CALC",
+              "POWER_GRID",
+              "POWER_GRID_REMAINING",
+              "POWER_STORAGE",
+              "ENERGY_PRODUCED",
+              "ENERGY_CONSUMED",
+              "ENERGY_CONSUMED_CALC",
+              "ENERGY_IMPORTED",
+              "ENERGY_EXPORTED",
+              "ENERGY_CHARGED",
+              "ENERGY_DISCHARGED",
+              "POWER_APPLIANCES",
+              "POWER_CHARGING_STATIONS",
+              "POWER_HEATING",
+              "ENERGY_APPLIANCES",
+              "ENERGY_CHARGING_STATIONS",
+              "ENERGY_HEATING",
+              "FRACTION_PV_TO_CONSUMPTION",
+              "FRACTION_PV_TO_STORAGE",
+              "FRACTION_PV_TO_GRID",
+              "FRACTION_GRID_TO_CONSUMPTION",
+              "FRACTION_GRID_TO_STORAGE",
+              "FRACTION_STORAGE_TO_CONSUMPTION",
+              "FRACTION_STORAGE_TO_GRID",
+              "PRODUCERS_ONLINE",
+              "STORAGES_ONLINE",
+              "GRID_METERS_ONLINE",
+              "CHARGING_POINTS_ONLINE",
+              "HEATING_ONLINE",
+              "GRID_CONNECTION_UTILIZATION",
+              "CHARGING_POINTS_CHARGING",
+              "CHARGING_POINTS_WAITING",
+              "CHARGING_POINTS_PRIORITIZED",
+              "CHARGING_POINTS_FAULTY",
+              "CHARGING_POINTS_AVAILABLE",
+              "CHARGING_POINTS_UNAVAILABLE",
+              "CHARGING_POINTS_CONNECTED",
+              "CHARGING_POINTS_DISCONNECTED",
+              "ENERGY_CHARGED_CHARGING_POINTS",
+              "ENERGY_DISCHARGED_CHARGING_POINTS",
+              "POWER_REMAINING_CMS",
+              "POWER_REMAINING_CMS_P1",
+              "POWER_REMAINING_CMS_P2",
+              "POWER_REMAINING_CMS_P3",
+              "POWER_CHARGING_POINTS",
+              "POWER_CHARGING_POINTS_P1",
+              "POWER_CHARGING_POINTS_P2",
+              "POWER_CHARGING_POINTS_P3",
+              "POWER_CHARGING_POINTS_AC",
+              "POWER_CHARGING_POINTS_DC",
+              "POWER_LIMIT_CMS",
+              "GRID_LIMITATION_BITMASK",
+              "CONTROL_STATE",
+              "RELAY",
+              "DIGITAL_INPUT",
+              "DIGITAL_OUTPUT",
+              "ANALOG_INPUT",
+              "ANALOG_OUTPUT",
+              "SERIAL_NUMBER",
+              "FIRMWARE_VERSION",
+              "CONNECTION_TRADER",
+              "CONNECTION_TRADER_BACKEND",
+              "CONNECTION_SYSTEM",
+              "POWER_CONTROL_MODE",
+              "CHARGING_POWER",
+              "DISCHARGING_POWER",
+              "LOCAL_POWER_SETPOINT",
+              "MAX_SOC_AVAILABLE",
+              "MIN_SOC_AVAILABLE",
+              "GRID_CONNECTED",
+              "SYSTEM_AVAILABLE",
+              "SYSTEM_RUNNING",
+              "SYSTEM_FAILURE",
+              "TARGET_POWER_SETPOINT",
+              "REMAINING_ENERGY_CHARGE",
+              "REMAINING_ENERGY_DISCHARGE"
+            ]
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "CommandDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "CONNECTION",
+              "CONNECTIONS",
+              "STATE_CODE",
+              "ERROR_CODES",
+              "ON_OFF",
+              "OPERATING_MODE",
+              "OPERATING_MODES",
+              "CONSUMED_ENERGY",
+              "PRODUCED_ENERGY",
+              "INPUT_ENERGY",
+              "OUTPUT_ENERGY",
+              "EXCESS_POWER",
+              "RATED_POWER",
+              "TARGET_POWER",
+              "VOLTAGE",
+              "CURRENT",
+              "POWER",
+              "ACTIVE_POWER",
+              "REACTIVE_POWER",
+              "APPARENT_POWER",
+              "POWER_FACTOR",
+              "FREQUENCY",
+              "POWER_P1",
+              "POWER_P2",
+              "POWER_P3",
+              "VOLTAGE_P1",
+              "VOLTAGE_P2",
+              "VOLTAGE_P3",
+              "CURRENT_P1",
+              "CURRENT_P2",
+              "CURRENT_P3",
+              "STATE_OF_CHARGE",
+              "FLOW_TEMPERATURE",
+              "RETURN_TEMPERATURE",
+              "TARGET_TEMPERATURE",
+              "MAX_TEMPERATURE",
+              "VOLUME_FLOW_RATE",
+              "FLOWED_VOLUME",
+              "REMOTE_CONTROL_ACTIVE",
+              "CHARGED_ENERGY",
+              "DISCHARGED_ENERGY",
+              "CAPACITY",
+              "CHARGING_CYCLES",
+              "HEALTH_STATE",
+              "CELL_TEMPERATURE",
+              "MAX_CELL_TEMPERATURE",
+              "MIN_CELL_TEMPERATURE",
+              "MAX_CELL_VOLTAGE",
+              "MIN_CELL_VOLTAGE",
+              "MAX_CELL_TEMPERATURE_NUMBER",
+              "MIN_CELL_TEMPERATURE_NUMBER",
+              "MAX_CELL_VOLTAGE_NUMBER",
+              "MIN_CELL_VOLTAGE_NUMBER",
+              "RACK_TEMPERATURES",
+              "RACK_HUMIDITIES",
+              "HEATSINK_TEMPERATURES",
+              "MAX_SOC",
+              "MIN_SOC",
+              "MAX_POWER",
+              "MAX_POWER_CHARGE",
+              "MAX_POWER_DISCHARGE",
+              "MAX_CURRENT_DISCHARGE",
+              "MIN_SOC_SELF_CONSUMPTION_OPT",
+              "MIN_SOC_PEAK_SHAVING_OPT",
+              "MIN_SOC_BLACKOUT",
+              "MIN_SOC_BACKUP_ENERGY",
+              "MIN_SOC_FEED_IN_OPT",
+              "MAX_GRID_POWER_FEED_IN_OPT",
+              "MAX_GRID_POWER_PEAK_SHAVING",
+              "LOAD_SHEDDING_LEVELS",
+              "EPS_MODE_ACTIVE",
+              "INSTALLED_CAPACITY",
+              "INSTALLED_POWER",
+              "BATTERY_BALANCING_STATE",
+              "COOLING_UNIT_STATE",
+              "COOLING_UNIT_TEMPERATURE",
+              "COOLING_UNIT_PRESSURE",
+              "DESIRED_SOC",
+              "POWER_CONTROL_PHASE_EMS",
+              "TEMPERATURES",
+              "HOT_WATER_OUTLET_TEMPERATURE",
+              "HEATING_OUTLET_TEMPERATURES",
+              "CP_STATE_CODE",
+              "EV_STATE_CODE",
+              "START_STOP_CHARGING",
+              "STATION_AVAILABILITY",
+              "CONSUMED_ENERGY_TOTAL",
+              "CONSUMED_ENERGY_ACTUAL",
+              "CHARGING_TIME",
+              "LAST_RFID_CARD",
+              "MAX_CURRENT_CHARGE",
+              "CHARGING_PROCESS_ENERGY",
+              "ENABLE_CHARGING",
+              "PAUSE_CHARGING",
+              "CHARGING_PROCESS_ID",
+              "CHARGING_PROCESS_START_TIME",
+              "MAX_POWER_CHARGE_FALLBACK",
+              "MAX_CURRENT_CHARGE_FALLBACK",
+              "PHASE_SWITCHING_MODE",
+              "VOLTAGE_P1_P2",
+              "VOLTAGE_P2_P3",
+              "VOLTAGE_P3_P1",
+              "HEATING_ENERGY",
+              "COOLING_ENERGY",
+              "FUEL_LEVEL",
+              "FUEL_CONSUMPTION",
+              "COOLANT_TEMPERATURE",
+              "OIL_TEMPERATURE",
+              "OIL_PRESSURE",
+              "COP",
+              "OPERATING_HOURS",
+              "ELECTRICAL_ENERGY",
+              "THERMAL_ENERGY",
+              "ELECTRICAL_POWER",
+              "THERMAL_POWER",
+              "REFRIGERANT_FLOW_TEMPERATURE",
+              "REFRIGERANT_RETURN_TEMPERATURE",
+              "ENVIRONMENTAL_INLET_TEMPERATURE",
+              "ENVIRONMENTAL_OUTLET_TEMPERATURE",
+              "ROOM_TEMPERATURE",
+              "TARGET_ROOM_TEMPERATURE",
+              "HC_OUTDOOR_TEMPERATURE",
+              "HC_PARALLEL_SHIFT",
+              "HC_SLOPE",
+              "OPERATING_MODE_SG_READY",
+              "LOCK_UNTIL",
+              "INPUTS_POWER",
+              "INPUT_POWER",
+              "ACTIVE_POWER_LIMIT",
+              "MAX_POWER_GRID_FEED_IN",
+              "VOLTAGES",
+              "CURRENTS",
+              "VALUE",
+              "CONTROLLER_MODE",
+              "TARGET_LOCAL_POWER_OFFSET",
+              "BATTERY_BALANCING_MODE",
+              "OVERALL_GRID_CONNECTED",
+              "OVERALL_SYSTEM_AVAILABLE",
+              "OVERALL_SYSTEM_RUNNING",
+              "OVERALL_SYSTEM_FAILURE",
+              "OVERALL_ACTIVE_POWER",
+              "OVERALL_LOCAL_POWER",
+              "OVERALL_AVAILABLE_POWER_CHARGE",
+              "OVERALL_AVAILABLE_POWER_DISCHARGE",
+              "OVERALL_INSTALLED_CAPACITY",
+              "OVERALL_AVAILABLE_CAPACITY",
+              "OVERALL_STATE_OF_CHARGE",
+              "OVERALL_MAX_SOC",
+              "OVERALL_MIN_SOC",
+              "OVERALL_REMAINING_ENERGY_CHARGE",
+              "OVERALL_REMAINING_ENERGY_DISCHARGE",
+              "OVERALL_TARGET_POWER_SETPOINT",
+              "OPERATING_MODE_REACTIVE",
+              "TARGET_POWER_REACTIVE",
+              "TARGET_POWER_FACTOR",
+              "SLAVE_TARGET_POWER",
+              "SLAVE_TARGET_POWER_REACTIVE",
+              "SLAVE_TARGET_POWER_FACTOR",
+              "SLAVE_REMOTE_CONTROL_ACTIVE",
+              "THIRDPARTY_TARGET_POWER",
+              "THIRDPARTY_TARGET_POWER_REACTIVE",
+              "THIRDPARTY_TARGET_POWER_FACTOR",
+              "THIRDPARTY_REMOTE_CONTROL_ACTIVE",
+              "SELF_SUFFICIENCY",
+              "POWER_PRODUCTION",
+              "POWER_CONSUMPTION",
+              "POWER_CONSUMPTION_CALC",
+              "POWER_GRID",
+              "POWER_GRID_REMAINING",
+              "POWER_STORAGE",
+              "ENERGY_PRODUCED",
+              "ENERGY_CONSUMED",
+              "ENERGY_CONSUMED_CALC",
+              "ENERGY_IMPORTED",
+              "ENERGY_EXPORTED",
+              "ENERGY_CHARGED",
+              "ENERGY_DISCHARGED",
+              "POWER_APPLIANCES",
+              "POWER_CHARGING_STATIONS",
+              "POWER_HEATING",
+              "ENERGY_APPLIANCES",
+              "ENERGY_CHARGING_STATIONS",
+              "ENERGY_HEATING",
+              "FRACTION_PV_TO_CONSUMPTION",
+              "FRACTION_PV_TO_STORAGE",
+              "FRACTION_PV_TO_GRID",
+              "FRACTION_GRID_TO_CONSUMPTION",
+              "FRACTION_GRID_TO_STORAGE",
+              "FRACTION_STORAGE_TO_CONSUMPTION",
+              "FRACTION_STORAGE_TO_GRID",
+              "PRODUCERS_ONLINE",
+              "STORAGES_ONLINE",
+              "GRID_METERS_ONLINE",
+              "CHARGING_POINTS_ONLINE",
+              "HEATING_ONLINE",
+              "GRID_CONNECTION_UTILIZATION",
+              "CHARGING_POINTS_CHARGING",
+              "CHARGING_POINTS_WAITING",
+              "CHARGING_POINTS_PRIORITIZED",
+              "CHARGING_POINTS_FAULTY",
+              "CHARGING_POINTS_AVAILABLE",
+              "CHARGING_POINTS_UNAVAILABLE",
+              "CHARGING_POINTS_CONNECTED",
+              "CHARGING_POINTS_DISCONNECTED",
+              "ENERGY_CHARGED_CHARGING_POINTS",
+              "ENERGY_DISCHARGED_CHARGING_POINTS",
+              "POWER_REMAINING_CMS",
+              "POWER_REMAINING_CMS_P1",
+              "POWER_REMAINING_CMS_P2",
+              "POWER_REMAINING_CMS_P3",
+              "POWER_CHARGING_POINTS",
+              "POWER_CHARGING_POINTS_P1",
+              "POWER_CHARGING_POINTS_P2",
+              "POWER_CHARGING_POINTS_P3",
+              "POWER_CHARGING_POINTS_AC",
+              "POWER_CHARGING_POINTS_DC",
+              "POWER_LIMIT_CMS",
+              "GRID_LIMITATION_BITMASK",
+              "CONTROL_STATE",
+              "RELAY",
+              "DIGITAL_INPUT",
+              "DIGITAL_OUTPUT",
+              "ANALOG_INPUT",
+              "ANALOG_OUTPUT",
+              "SERIAL_NUMBER",
+              "FIRMWARE_VERSION",
+              "CONNECTION_TRADER",
+              "CONNECTION_TRADER_BACKEND",
+              "CONNECTION_SYSTEM",
+              "POWER_CONTROL_MODE",
+              "CHARGING_POWER",
+              "DISCHARGING_POWER",
+              "LOCAL_POWER_SETPOINT",
+              "MAX_SOC_AVAILABLE",
+              "MIN_SOC_AVAILABLE",
+              "GRID_CONNECTED",
+              "SYSTEM_AVAILABLE",
+              "SYSTEM_RUNNING",
+              "SYSTEM_FAILURE",
+              "TARGET_POWER_SETPOINT",
+              "REMAINING_ENERGY_CHARGE",
+              "REMAINING_ENERGY_DISCHARGE"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "CommandResponseDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "CONNECTION",
+              "CONNECTIONS",
+              "STATE_CODE",
+              "ERROR_CODES",
+              "ON_OFF",
+              "OPERATING_MODE",
+              "OPERATING_MODES",
+              "CONSUMED_ENERGY",
+              "PRODUCED_ENERGY",
+              "INPUT_ENERGY",
+              "OUTPUT_ENERGY",
+              "EXCESS_POWER",
+              "RATED_POWER",
+              "TARGET_POWER",
+              "VOLTAGE",
+              "CURRENT",
+              "POWER",
+              "ACTIVE_POWER",
+              "REACTIVE_POWER",
+              "APPARENT_POWER",
+              "POWER_FACTOR",
+              "FREQUENCY",
+              "POWER_P1",
+              "POWER_P2",
+              "POWER_P3",
+              "VOLTAGE_P1",
+              "VOLTAGE_P2",
+              "VOLTAGE_P3",
+              "CURRENT_P1",
+              "CURRENT_P2",
+              "CURRENT_P3",
+              "STATE_OF_CHARGE",
+              "FLOW_TEMPERATURE",
+              "RETURN_TEMPERATURE",
+              "TARGET_TEMPERATURE",
+              "MAX_TEMPERATURE",
+              "VOLUME_FLOW_RATE",
+              "FLOWED_VOLUME",
+              "REMOTE_CONTROL_ACTIVE",
+              "CHARGED_ENERGY",
+              "DISCHARGED_ENERGY",
+              "CAPACITY",
+              "CHARGING_CYCLES",
+              "HEALTH_STATE",
+              "CELL_TEMPERATURE",
+              "MAX_CELL_TEMPERATURE",
+              "MIN_CELL_TEMPERATURE",
+              "MAX_CELL_VOLTAGE",
+              "MIN_CELL_VOLTAGE",
+              "MAX_CELL_TEMPERATURE_NUMBER",
+              "MIN_CELL_TEMPERATURE_NUMBER",
+              "MAX_CELL_VOLTAGE_NUMBER",
+              "MIN_CELL_VOLTAGE_NUMBER",
+              "RACK_TEMPERATURES",
+              "RACK_HUMIDITIES",
+              "HEATSINK_TEMPERATURES",
+              "MAX_SOC",
+              "MIN_SOC",
+              "MAX_POWER",
+              "MAX_POWER_CHARGE",
+              "MAX_POWER_DISCHARGE",
+              "MAX_CURRENT_DISCHARGE",
+              "MIN_SOC_SELF_CONSUMPTION_OPT",
+              "MIN_SOC_PEAK_SHAVING_OPT",
+              "MIN_SOC_BLACKOUT",
+              "MIN_SOC_BACKUP_ENERGY",
+              "MIN_SOC_FEED_IN_OPT",
+              "MAX_GRID_POWER_FEED_IN_OPT",
+              "MAX_GRID_POWER_PEAK_SHAVING",
+              "LOAD_SHEDDING_LEVELS",
+              "EPS_MODE_ACTIVE",
+              "INSTALLED_CAPACITY",
+              "INSTALLED_POWER",
+              "BATTERY_BALANCING_STATE",
+              "COOLING_UNIT_STATE",
+              "COOLING_UNIT_TEMPERATURE",
+              "COOLING_UNIT_PRESSURE",
+              "DESIRED_SOC",
+              "POWER_CONTROL_PHASE_EMS",
+              "TEMPERATURES",
+              "HOT_WATER_OUTLET_TEMPERATURE",
+              "HEATING_OUTLET_TEMPERATURES",
+              "CP_STATE_CODE",
+              "EV_STATE_CODE",
+              "START_STOP_CHARGING",
+              "STATION_AVAILABILITY",
+              "CONSUMED_ENERGY_TOTAL",
+              "CONSUMED_ENERGY_ACTUAL",
+              "CHARGING_TIME",
+              "LAST_RFID_CARD",
+              "MAX_CURRENT_CHARGE",
+              "CHARGING_PROCESS_ENERGY",
+              "ENABLE_CHARGING",
+              "PAUSE_CHARGING",
+              "CHARGING_PROCESS_ID",
+              "CHARGING_PROCESS_START_TIME",
+              "MAX_POWER_CHARGE_FALLBACK",
+              "MAX_CURRENT_CHARGE_FALLBACK",
+              "PHASE_SWITCHING_MODE",
+              "VOLTAGE_P1_P2",
+              "VOLTAGE_P2_P3",
+              "VOLTAGE_P3_P1",
+              "HEATING_ENERGY",
+              "COOLING_ENERGY",
+              "FUEL_LEVEL",
+              "FUEL_CONSUMPTION",
+              "COOLANT_TEMPERATURE",
+              "OIL_TEMPERATURE",
+              "OIL_PRESSURE",
+              "COP",
+              "OPERATING_HOURS",
+              "ELECTRICAL_ENERGY",
+              "THERMAL_ENERGY",
+              "ELECTRICAL_POWER",
+              "THERMAL_POWER",
+              "REFRIGERANT_FLOW_TEMPERATURE",
+              "REFRIGERANT_RETURN_TEMPERATURE",
+              "ENVIRONMENTAL_INLET_TEMPERATURE",
+              "ENVIRONMENTAL_OUTLET_TEMPERATURE",
+              "ROOM_TEMPERATURE",
+              "TARGET_ROOM_TEMPERATURE",
+              "HC_OUTDOOR_TEMPERATURE",
+              "HC_PARALLEL_SHIFT",
+              "HC_SLOPE",
+              "OPERATING_MODE_SG_READY",
+              "LOCK_UNTIL",
+              "INPUTS_POWER",
+              "INPUT_POWER",
+              "ACTIVE_POWER_LIMIT",
+              "MAX_POWER_GRID_FEED_IN",
+              "VOLTAGES",
+              "CURRENTS",
+              "VALUE",
+              "CONTROLLER_MODE",
+              "TARGET_LOCAL_POWER_OFFSET",
+              "BATTERY_BALANCING_MODE",
+              "OVERALL_GRID_CONNECTED",
+              "OVERALL_SYSTEM_AVAILABLE",
+              "OVERALL_SYSTEM_RUNNING",
+              "OVERALL_SYSTEM_FAILURE",
+              "OVERALL_ACTIVE_POWER",
+              "OVERALL_LOCAL_POWER",
+              "OVERALL_AVAILABLE_POWER_CHARGE",
+              "OVERALL_AVAILABLE_POWER_DISCHARGE",
+              "OVERALL_INSTALLED_CAPACITY",
+              "OVERALL_AVAILABLE_CAPACITY",
+              "OVERALL_STATE_OF_CHARGE",
+              "OVERALL_MAX_SOC",
+              "OVERALL_MIN_SOC",
+              "OVERALL_REMAINING_ENERGY_CHARGE",
+              "OVERALL_REMAINING_ENERGY_DISCHARGE",
+              "OVERALL_TARGET_POWER_SETPOINT",
+              "OPERATING_MODE_REACTIVE",
+              "TARGET_POWER_REACTIVE",
+              "TARGET_POWER_FACTOR",
+              "SLAVE_TARGET_POWER",
+              "SLAVE_TARGET_POWER_REACTIVE",
+              "SLAVE_TARGET_POWER_FACTOR",
+              "SLAVE_REMOTE_CONTROL_ACTIVE",
+              "THIRDPARTY_TARGET_POWER",
+              "THIRDPARTY_TARGET_POWER_REACTIVE",
+              "THIRDPARTY_TARGET_POWER_FACTOR",
+              "THIRDPARTY_REMOTE_CONTROL_ACTIVE",
+              "SELF_SUFFICIENCY",
+              "POWER_PRODUCTION",
+              "POWER_CONSUMPTION",
+              "POWER_CONSUMPTION_CALC",
+              "POWER_GRID",
+              "POWER_GRID_REMAINING",
+              "POWER_STORAGE",
+              "ENERGY_PRODUCED",
+              "ENERGY_CONSUMED",
+              "ENERGY_CONSUMED_CALC",
+              "ENERGY_IMPORTED",
+              "ENERGY_EXPORTED",
+              "ENERGY_CHARGED",
+              "ENERGY_DISCHARGED",
+              "POWER_APPLIANCES",
+              "POWER_CHARGING_STATIONS",
+              "POWER_HEATING",
+              "ENERGY_APPLIANCES",
+              "ENERGY_CHARGING_STATIONS",
+              "ENERGY_HEATING",
+              "FRACTION_PV_TO_CONSUMPTION",
+              "FRACTION_PV_TO_STORAGE",
+              "FRACTION_PV_TO_GRID",
+              "FRACTION_GRID_TO_CONSUMPTION",
+              "FRACTION_GRID_TO_STORAGE",
+              "FRACTION_STORAGE_TO_CONSUMPTION",
+              "FRACTION_STORAGE_TO_GRID",
+              "PRODUCERS_ONLINE",
+              "STORAGES_ONLINE",
+              "GRID_METERS_ONLINE",
+              "CHARGING_POINTS_ONLINE",
+              "HEATING_ONLINE",
+              "GRID_CONNECTION_UTILIZATION",
+              "CHARGING_POINTS_CHARGING",
+              "CHARGING_POINTS_WAITING",
+              "CHARGING_POINTS_PRIORITIZED",
+              "CHARGING_POINTS_FAULTY",
+              "CHARGING_POINTS_AVAILABLE",
+              "CHARGING_POINTS_UNAVAILABLE",
+              "CHARGING_POINTS_CONNECTED",
+              "CHARGING_POINTS_DISCONNECTED",
+              "ENERGY_CHARGED_CHARGING_POINTS",
+              "ENERGY_DISCHARGED_CHARGING_POINTS",
+              "POWER_REMAINING_CMS",
+              "POWER_REMAINING_CMS_P1",
+              "POWER_REMAINING_CMS_P2",
+              "POWER_REMAINING_CMS_P3",
+              "POWER_CHARGING_POINTS",
+              "POWER_CHARGING_POINTS_P1",
+              "POWER_CHARGING_POINTS_P2",
+              "POWER_CHARGING_POINTS_P3",
+              "POWER_CHARGING_POINTS_AC",
+              "POWER_CHARGING_POINTS_DC",
+              "POWER_LIMIT_CMS",
+              "GRID_LIMITATION_BITMASK",
+              "CONTROL_STATE",
+              "RELAY",
+              "DIGITAL_INPUT",
+              "DIGITAL_OUTPUT",
+              "ANALOG_INPUT",
+              "ANALOG_OUTPUT",
+              "SERIAL_NUMBER",
+              "FIRMWARE_VERSION",
+              "CONNECTION_TRADER",
+              "CONNECTION_TRADER_BACKEND",
+              "CONNECTION_SYSTEM",
+              "POWER_CONTROL_MODE",
+              "CHARGING_POWER",
+              "DISCHARGING_POWER",
+              "LOCAL_POWER_SETPOINT",
+              "MAX_SOC_AVAILABLE",
+              "MIN_SOC_AVAILABLE",
+              "GRID_CONNECTED",
+              "SYSTEM_AVAILABLE",
+              "SYSTEM_RUNNING",
+              "SYSTEM_FAILURE",
+              "TARGET_POWER_SETPOINT",
+              "REMAINING_ENERGY_CHARGE",
+              "REMAINING_ENERGY_DISCHARGE"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "SUCCESSFUL",
+              "FAILED",
+              "REJECTED",
+              "TIMEOUT",
+              "PENDING"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "status"
+        ]
+      },
+      "ExternalPlantControlDataPointState": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "CONNECTION_TRADER",
+              "CONNECTION_TRADER_BACKEND",
+              "POWER_CONTROL_MODE",
+              "TARGET_POWER",
+              "TARGET_LOCAL_POWER_OFFSET",
+              "CONNECTION_SYSTEM",
+              "GRID_CONNECTED",
+              "SYSTEM_AVAILABLE",
+              "SYSTEM_RUNNING",
+              "SYSTEM_FAILURE",
+              "ACTIVE_POWER",
+              "CHARGING_POWER",
+              "DISCHARGING_POWER",
+              "TARGET_POWER_SETPOINT",
+              "LOCAL_POWER_SETPOINT",
+              "MAX_POWER_CHARGE",
+              "MAX_POWER_DISCHARGE",
+              "STATE_OF_CHARGE",
+              "MAX_SOC_AVAILABLE",
+              "MIN_SOC_AVAILABLE",
+              "REMAINING_ENERGY_CHARGE",
+              "REMAINING_ENERGY_DISCHARGE"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "dataPointId": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "value",
+          "dataPointId",
+          "ts"
+        ]
+      },
+      "ExternalPlantControlStatesDto": {
+        "type": "object",
+        "properties": {
+          "states": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExternalPlantControlDataPointState"
+            }
+          },
+          "externalPlantControlId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "states",
+          "externalPlantControlId"
+        ]
+      },
+      "ExternalPlantControlCommandDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "CONNECTION_TRADER_BACKEND",
+              "POWER_CONTROL_MODE",
+              "TARGET_POWER",
+              "TARGET_LOCAL_POWER_OFFSET"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    },
+    {
+      "basic": []
+    }
+  ]
+}

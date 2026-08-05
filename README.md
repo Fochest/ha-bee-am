@@ -8,7 +8,11 @@ Es werden Messwerte wie Stromproduktion, Verbrauch, Netzbezug, Speicherzustand s
 
 Alle Sensoren unterstützen nun zusätzlich das Attribut `state_class`, um korrekte Auswertungen in den Home Assistant Dashboards zu ermöglichen.
 
-> **Kompatibilität:** erfolgreich getestet gegen **Beaam-Software `v1.78.0-build8959`** (Stand 2026-08-05). Alle genutzten Endpunkte und Datenpunkt-Keys sind unter 1.78 unverändert verfügbar. Das Schreiben von Settings über die lokale API ist von NEOOM offiziell mit **1.77** eingeführt worden.
+> **Kompatibilität** (Stand 2026-08-05): erfolgreich getestet gegen die lokale **BEAAM API `2.13.0`** — das ist die `info.version` des OpenAPI-Dokuments unter `http://<beaam>/api-json`, das Gerät meldete dabei NTUITY OS `v1.17.0-build3919` und Firmware `1.36.0`.
+>
+> Es gibt **keinen bekannten Mindest-Softwarestand.** Die Integration legt Entitäten ausschließlich für Keys an, die die API tatsächlich liefert — fehlt ein Key, fehlt die Entität, es gibt keinen Fehler. Lediglich das **Schreiben** (der Lademodus-Select) braucht eine Software, die `PUT /things/{thingId}/settings` beherrscht; NEOOM hat das laut Changelog mit **BEAAM-Software 1.77** eingeführt. Fehlt es, entfällt nur der Select, die Sensoren laufen weiter.
+>
+> Vorsicht bei Versionsnummern: die im neoom-Changelog geführte „BEAAM Software"-Reihe (1.7x) ist **nicht** dieselbe Zählung wie die lokal gemeldete NTUITY-OS- oder API-Version.
 
 ---
 
@@ -196,6 +200,32 @@ Für jede Wallbox mit dem Setting `OPERATING_MODE_EMS` wird zusätzlich eine **`
     logs:
       custom_components.beaam: debug
   ```
+
+---
+
+## API-Stand festhalten und Updates prüfen (`tools/api_snapshot.py`)
+
+Weil die Integration alles zur Laufzeit entdeckt, bringt ein Firmware-Update sie nie zum Absturz — sie legt still keine Entität mehr an, wenn ein Key verschwindet. `tools/api_snapshot.py` macht das sichtbar, bevor es Nutzern auffällt:
+
+```bash
+# Stand der aktuell laufenden Software festhalten
+BEAAM_TOKEN=sk_beaam_… python tools/api_snapshot.py capture \
+    --ip 192.168.1.50 -o tools/baselines/api-2.13.0.json
+
+# nach einem Update: neu aufnehmen und gegen alle vorgehaltenen Stände prüfen
+BEAAM_TOKEN=sk_beaam_… python tools/api_snapshot.py capture --ip 192.168.1.50 -o /tmp/neu.json
+python tools/api_snapshot.py compare tools/baselines /tmp/neu.json
+```
+
+`capture` schreibt zwei Dateien: den Snapshot (Endpunkt-Status, Datenpunkt-Keys mit `dataType`/`unitOfMeasure`/`controllable`, JSON-Typ der Werte) und daneben das vollständige OpenAPI-Dokument als `*.openapi.json`, das die komplette Datenpunkt-Sprache dieser Version festhält. Messwerte, Thing-IDs, Site-ID und Geokoordinaten werden bewusst **nicht** gespeichert, damit Baselines committet werden können.
+
+`compare` stuft jeden Unterschied ein:
+
+- **BREAKING** — etwas, das die Integration wirklich benutzt, ist weg oder hat den Typ gewechselt (auch: eine benutzte OpenAPI-Operation fehlt). Exit-Code 1.
+- **WARN** — ein Key oder Thing-Typ ist verschwunden, aus dem keine Entität gebaut wurde.
+- **INFO** — neue Keys, Versionssprünge, geänderte `controllable`-Flags. Bei neuen Keys steht dabei, ob die Prefix-Regel sie auffängt oder ob sie deaktiviert angelegt würden und gemappt werden sollten.
+
+Die Liste der „wirklich benutzten" Keys liest das Skript per AST aus `custom_components/beaam/`, nicht aus einer eigenen Kopie — die Prüfung folgt also automatisch dem Code. Mehrere Baselines im Verzeichnis werden alle gegen den Kandidaten geprüft, sodass man gegen mehrere ältere Stände testen kann.
 
 ---
 
