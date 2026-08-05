@@ -175,14 +175,22 @@ Hinweise:
 
 Für jede Wallbox mit dem Setting `OPERATING_MODE_EMS` wird zusätzlich eine **`select`-Entität „Lademodus"** angelegt. Damit lässt sich der Lademodus direkt aus Home Assistant umschalten (schreibt via `PUT /things/{thingId}/settings`):
 
-| Auswahl   | `OPERATING_MODE_EMS` |
-|-----------|----------------------|
-| Solar     | `EXCESS_CONSUMPTION` |
-| Schnell   | `FAST_CHARGING`      |
+| Auswahl         | `OPERATING_MODE_EMS` | angeboten |
+|-----------------|----------------------|-----------|
+| Solar           | `EXCESS_CONSUMPTION` | ja        |
+| Schnell         | `FAST_CHARGING`      | ja        |
+| Intelligent     | `GRIID_CONTROLLED`   | nein      |
+| Ausgenommen     | `DEVICE_CONTROLLED`  | nein      |
+| Flexibilitätsvermarktung | `FLEXIBILITY_MARKETING` | nein |
 
-- **Solar** lädt aus PV-Überschuss, **Schnell** lädt mit voller Leistung.
-- Meldet die Wallbox einen unbekannten Modus-Wert, wird dieser als zusätzliche (rohe) Option angezeigt, damit der aktuelle Zustand immer korrekt dargestellt wird.
+- **Solar** lädt aus PV-Überschuss, **Schnell** mit voller Leistung. Beide sind immer wählbar.
+- **Intelligent** überlässt neoom CONNECT Ai die Entscheidung, wann am kostengünstigsten geladen wird, und **setzt ein CONNECT-Abo Mega oder Giga voraus**. Ob eines besteht, ist über die lokale API **nicht feststellbar** — es gibt kein Berechtigungsfeld, und ein Beaam ohne Abo nimmt den Wert trotzdem an und behält ihn (gemessen: `200`, fünf Minuten gehalten, kein serverseitiges Zurückrollen). Es gibt also nichts, worauf man reagieren könnte, und was eine so geschaltete Station tut, ist unbekannt — plausibel ist, dass nie ein Ladeplan eintrifft und das Auto stillschweigend nicht lädt. Deshalb wird der Modus **nicht zur Auswahl gestellt**: wer das Abo hat, stellt ihn einmal in der neoom-App ein, danach meldet ihn die Wallbox und er ist hier wählbar. Der Weg heraus ist eine Einbahnstraße, was nach einer Kündigung genau richtig ist.
+- **Ausgenommen** würde die Wallbox der CONNECT-Steuerung ganz entziehen, **Flexibilitätsvermarktung** ist kein Lademodus — beide werden daher nur benannt, nicht angeboten.
+- Solange die Wallbox einen dieser Modi tatsächlich meldet, bleibt er in der Liste, damit der aktuelle Zustand darstellbar ist. Bei einem **unbekannten** Wert erscheint er als rohe Option.
+- Die Parameter für „Intelligent" — Lademenge und Abfahrtszeit — liegen als Settings `GRIID_CHARGING_ENERGY` und `GRIID_EV_DEPARTURE_TIME` vor und werden derzeit nicht angeboten.
 - Nach dem Umschalten wird der Coordinator sofort aktualisiert, sodass der neue Modus ohne Wartezeit auf das Polling-Intervall erscheint.
+
+NEOOM dokumentiert die erlaubten Werte nirgends in der API (`SettingDto.value` ist nur `string|number|boolean`); die Tabelle stammt aus den Übersetzungen des CONNECT-Portals unter dem Schlüssel `OPERATING_MODE_EMS/values`.
 
 ---
 
@@ -204,7 +212,8 @@ Für jede Wallbox mit dem Setting `OPERATING_MODE_EMS` wird zusätzlich eine **`
 ## ToDo / Erweiterungen
 
 - Weitere schreibende Aktionen via `POST /things/{thingId}/commands` (z. B. Ladeleistung, Start/Stop). Zu beachten: Kommandos greifen laut NEOOM nur auf Datenpunkten, die in `/site/configuration` mit `"controllable": true` markiert sind. Beim `CHARGING_POINT_AC` sind das je nach Station ggf. nur `MAX_POWER_CHARGE`, `MAX_POWER_CHARGE_FALLBACK` und `PHASE_SWITCHING_MODE` — Kommandos wie `STATION_AVAILABILITY` oder `ENABLE_CHARGING` stehen im API-Enum, sind aber nicht zwingend am eigenen Thing verfügbar.
-- Unterstützung für weitere Thing-Typen (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analog zur Wallbox-Integration
+- Unterstützung für weitere Thing-Typen (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analog zur Wallbox-Integration. Der `BATTERY` exponiert ebenfalls `OPERATING_MODE_EMS` — der Lademodus-Select ließe sich also unverändert auf den Speicher anwenden.
+- `GRIID_CHARGING_ENERGY` und `GRIID_EV_DEPARTURE_TIME` als Number- bzw. Datetime-Entität, damit der Modus „Intelligent" auch parametriert werden kann
 - Konfigurierbares Polling-Intervall
 
 ---

@@ -175,14 +175,22 @@ Notes:
 
 For every wallbox that exposes the `OPERATING_MODE_EMS` setting, a **`select` entity "Lademodus" (charging mode)** is created as well. It lets you switch the charging mode straight from Home Assistant (writes via `PUT /things/{thingId}/settings`):
 
-| Option    | `OPERATING_MODE_EMS` |
-|-----------|----------------------|
-| Solar     | `EXCESS_CONSUMPTION` |
-| Schnell   | `FAST_CHARGING`      |
+| Option      | `OPERATING_MODE_EMS` | offered |
+|-------------|----------------------|---------|
+| Solar       | `EXCESS_CONSUMPTION` | yes     |
+| Schnell     | `FAST_CHARGING`      | yes     |
+| Intelligent | `GRIID_CONTROLLED`   | no      |
+| Ausgenommen | `DEVICE_CONTROLLED`  | no      |
+| Flexibilitätsvermarktung | `FLEXIBILITY_MARKETING` | no |
 
-- **Solar** charges from PV surplus, **Schnell** (fast) charges at full power.
-- If the wallbox reports an unknown mode value, it is shown as an additional (raw) option so the current state is always represented correctly.
+- **Solar** charges from PV surplus, **Schnell** (fast) at full power. Both are always selectable.
+- **Intelligent** leaves it to neoom CONNECT Ai to decide when charging is cheapest and **requires a CONNECT Mega or Giga subscription**. Whether one exists **cannot** be determined through the local API — there is no entitlement field, and a Beaam without the subscription accepts and keeps the value anyway (measured: `200`, held for five minutes, no server-side rollback). So there is nothing to react to, and what such a station does is unknown — the plausible failure is that no charging plan ever arrives and the car silently does not charge. The mode is therefore **not offered as a choice**: with the subscription you set it once in the neoom app, after which the wallbox reports it and it becomes selectable here. Switching away from it is a one-way door, which is exactly right if the subscription has lapsed.
+- **Ausgenommen** would take the wallbox out of CONNECT's control entirely and **Flexibilitätsvermarktung** is not a charging mode, so both are labelled only, never offered.
+- While the wallbox actually reports one of those modes it stays in the list so the current state is representable. An **unknown** value appears as a raw option.
+- The parameters for "Intelligent" — charging amount and departure time — exist as the settings `GRIID_CHARGING_ENERGY` and `GRIID_EV_DEPARTURE_TIME` and are not exposed yet.
 - After switching, the coordinator refreshes immediately so the new mode appears without waiting for the polling interval.
+
+NEOOM does not document the permitted values anywhere in the API (`SettingDto.value` is merely `string|number|boolean`); the table above comes from the CONNECT portal's translations under the key `OPERATING_MODE_EMS/values`.
 
 ---
 
@@ -204,7 +212,8 @@ For every wallbox that exposes the `OPERATING_MODE_EMS` setting, a **`select` en
 ## ToDo / future extensions
 
 - Further write actions via `POST /things/{thingId}/commands` (e.g. charging power, start/stop). Note: per NEOOM, commands only apply to datapoints marked `"controllable": true` in `/site/configuration`. On a `CHARGING_POINT_AC` that may be limited to `MAX_POWER_CHARGE`, `MAX_POWER_CHARGE_FALLBACK` and `PHASE_SWITCHING_MODE` — commands such as `STATION_AVAILABILITY` or `ENABLE_CHARGING` exist in the API enum but are not necessarily available on your own thing.
-- Support for additional thing types (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analogous to the wallbox integration
+- Support for additional thing types (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analogous to the wallbox integration. `BATTERY` exposes `OPERATING_MODE_EMS` as well, so the charging-mode select would apply to the storage unchanged.
+- `GRIID_CHARGING_ENERGY` and `GRIID_EV_DEPARTURE_TIME` as number and datetime entities, so the "Intelligent" mode can be parameterised
 - Configurable polling interval
 
 ---

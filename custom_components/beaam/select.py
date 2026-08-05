@@ -4,7 +4,12 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, CHARGING_MODE_SETTING, CHARGING_MODES
+from .const import (
+    DOMAIN,
+    CHARGING_MODE_SETTING,
+    CHARGING_MODES,
+    SELECTABLE_CHARGING_MODES,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -60,12 +65,13 @@ class BeaamWallboxModeSelect(CoordinatorEntity, SelectEntity):
 
     @property
     def options(self):
-        # Known modes, plus the current raw value if the device reports something unmapped,
-        # so current_option always stays within options.
-        opts = list(CHARGING_MODES.values())
-        raw = self._raw_value()
-        if raw is not None and raw not in CHARGING_MODES and str(raw) not in opts:
-            opts.append(str(raw))
+        opts = [CHARGING_MODES[value] for value in SELECTABLE_CHARGING_MODES]
+        current = self._device_option()
+        if current is not None and current not in opts:
+            # Whatever the device actually reports stays selectable, so a mode we
+            # deliberately do not offer - or do not know yet - can be switched
+            # back to, and current_option never falls outside options.
+            opts.append(current)
         return opts
 
     @property
@@ -74,10 +80,14 @@ class BeaamWallboxModeSelect(CoordinatorEntity, SelectEntity):
         return self._optimistic or self._device_option()
 
     async def async_select_option(self, option: str):
-        value = LABEL_TO_VALUE.get(option)
-        if value is None:
-            _LOGGER.warning("Unknown Beaam charging mode option: %s", option)
+        if option not in self.options:
+            _LOGGER.warning(
+                "Charging mode %s is not offered for this wallbox", option
+            )
             return
+        # Mapped labels resolve to their neoom enum value; an unmapped mode the
+        # device reported is its own value.
+        value = LABEL_TO_VALUE.get(option, option)
         # Show the new mode right away, then write it.
         self._optimistic = option
         self.async_write_ha_state()

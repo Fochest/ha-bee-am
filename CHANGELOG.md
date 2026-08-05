@@ -11,6 +11,30 @@ Releases are cut by pushing a tag; note that the tag names carry a dot after the
 
 ### Added
 
+- Labels for the three `OPERATING_MODE_EMS` values the integration did not know:
+  `GRIID_CONTROLLED` ("Intelligent"), `DEVICE_CONTROLLED` ("Ausgenommen") and
+  `FLEXIBILITY_MARKETING` ("Flexibilitätsvermarktung"), so Home Assistant shows
+  a proper label instead of the raw enum string when a wallbox is in one of them.
+
+  None of the three is offered as a choice. "Intelligent" is NEOOM's CONNECT Ai
+  mode and needs a CONNECT Mega or Giga subscription; the local API has no
+  entitlement field, and a Beaam without the subscription accepts and keeps the
+  value anyway (measured: `200`, held for five minutes, no server-side rollback),
+  so there is nothing to react to and no way to know what such a station would
+  do. A subscriber sets the mode once in the neoom app, after which the device
+  reports it and it becomes selectable here. "Ausgenommen" would take the wallbox
+  out of CONNECT's control entirely and "Flexibilitätsvermarktung" is not a
+  charging mode.
+
+  NEOOM documents none of these values in the API — `SettingDto` carries only
+  `key` and `value`, and `value` is just `string|number|boolean`. The labels come
+  from the CONNECT portal's translations under the key
+  `OPERATING_MODE_EMS/values`.
+
+  Note for when this ships: the select's state changes from the raw
+  `GRIID_CONTROLLED` to `Intelligent` for anyone whose wallbox is in that mode,
+  which affects templates or automations comparing against the raw string.
+
 - `tools/api_snapshot.py`: record the shape of the Beaam local API for a given
   software version and diff later versions against it. `capture` stores endpoint
   status codes, datapoint keys with the `dataType`/`unitOfMeasure`/`controllable`
@@ -27,6 +51,12 @@ Releases are cut by pushing a tag; note that the tag names carry a dot after the
   the API does not report simply yields no entity rather than an error. Only
   switching the charging mode needs software that can write settings (NEOOM
   introduced that in 1.77). The version details moved to `tools/README.md`.
+
+### Fixed
+
+- Selecting the mode the wallbox is already in was rejected with a log warning
+  when that mode was one the integration did not know. The select now resolves
+  any option it offers, mapped or raw.
 
 ## [0.5.1] - 2026-08-05
 
