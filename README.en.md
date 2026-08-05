@@ -14,6 +14,8 @@ All sensors now also provide the `state_class` attribute so that they are evalua
 
 ## Installation
 
+What changed in each version is listed in the [changelog](CHANGELOG.md).
+
 1. Download `beaam.zip` from the latest [release](https://github.com/Fochest/ha-bee-am/releases/latest) and extract it into:
 
    ```
