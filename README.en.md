@@ -8,6 +8,8 @@ It exposes measurements such as power production, consumption, grid import/expor
 
 All sensors now also provide the `state_class` attribute so that they are evaluated correctly in Home Assistant dashboards.
 
+> **Compatibility:** successfully tested against Beaam software **`v1.78.0-build8959`** (as of 2026-08-05). Every endpoint and datapoint key used by this integration is unchanged under 1.78. Writing settings through the local API was officially introduced by NEOOM in **1.77**.
+
 ---
 
 ## Installation
@@ -80,6 +82,7 @@ The main sensors automatically receive **units**, **device classes**, and **stat
 | POWER_CHARGING_STATIONS         | W    | power        | measurement |
 | POWER_HEATING                   | W    | power        | measurement |
 | POWER_GRID                      | W    | power        | measurement |
+| POWER_GRID_REMAINING            | W    | power        | measurement |
 | POWER_STORAGE                   | W    | power        | measurement |
 | MAX_NETWORK_UTILIZATION         | W    | power        | measurement |
 | ENERGY_PRODUCED                 | Wh   | energy       | total_increasing |
@@ -109,6 +112,29 @@ Notes on consumption:
 - `POWER_CONSUMPTION_CALC` / `ENERGY_CONSUMED_CALC` are the **calculated total consumption** for sites without a dedicated consumption meter. With a meter installed NEOOM sends `POWER_CONSUMPTION` / `ENERGY_CONSUMED` (measured) instead. Use these for whole-home consumption.
 - `POWER_APPLIANCES` is, per NEOOM, a **residual**: total consumption minus all other sub-consumers (`POWER_CHARGING_STATIONS`, `POWER_HEATING`, …). Do *not* use it as total consumption.
 - Keys not explicitly mapped are given W/Wh automatically based on their `POWER_*`/`ENERGY_*` prefix. Keys without a known prefix (e.g. plain status strings) are created **disabled by default** so they don't clutter the activity stream — enable them manually in Home Assistant if needed.
+- `POWER_GRID_REMAINING` is the power headroom left at the grid connection. The corresponding limits come from `/site/configuration` under `siteInfo.gridConnections` (`maxPowerSupply` / `maxPowerFeedIn`). Sites for which NEOOM does not compute the value report `null`, leaving the sensor "unknown".
+
+---
+
+## Reachability (binary sensors)
+
+For each device category NEOOM publishes a **BOOLEAN flag** in `energyFlow` indicating whether the Beaam currently reaches the things of that class. These keys are created as `binary_sensor` entities with `device_class: connectivity` (and therefore *no longer* as plain sensors):
+
+| Key                     | Meaning                        |
+|-------------------------|--------------------------------|
+| PRODUCERS_ONLINE        | producers (PV) reachable        |
+| STORAGES_ONLINE         | storage/battery reachable       |
+| GRID_METERS_ONLINE      | grid meters reachable           |
+| CHARGING_POINTS_ONLINE  | charging points reachable       |
+| HEATING_ONLINE          | heating reachable               |
+
+In addition, every wallbox gets a `binary_sensor` from its **`CONNECTION`** state — whether the Beaam reaches the station itself.
+
+Notes:
+
+- If a category does not exist in the site (e.g. no heating), NEOOM reports `null`. The binary sensor deliberately stays **"unknown"** instead of being flattened to "disconnected", which would make an absent category look like a fault.
+- `CHARGING_POINTS_ONLINE` and `CONNECTION` are independent of `CP_STATE_CODE`: a station can be reachable (`true`) while reporting itself as `UNAVAILABLE`. Use the connectivity flag for outage alerts and `CP_STATE_CODE` for charging state.
+- **Upgrading from ≤ 0.5.0:** the `*_ONLINE` keys used to be created as (disabled-by-default) plain sensors. After the update they appear as binary sensors; the old disabled `sensor.*` entries remain as registry leftovers and can be deleted.
 
 ---
 
@@ -133,10 +159,13 @@ Every wallbox of type `CHARGING_POINT_AC` configured on the site is detected aut
 | LAST_RFID_CARD            | –    | –            | –                |
 | SERIAL_NUMBER             | –    | –            | –                |
 | FIRMWARE_VERSION          | –    | –            | –                |
+| ERROR_CODES               | –    | –            | – (diagnostic)   |
 
 Notes:
 
 - `CONSUMED_ENERGY_TOTAL` is the cumulative lifetime counter of the wallbox and is suitable for the Home Assistant Energy Dashboard.
+- `ERROR_CODES` is delivered as a string array. Because a Home Assistant state must be scalar, multiple codes are joined with commas and an empty list is reported as **`OK`**. The entity is categorised as **diagnostic**.
+- `SERIAL_NUMBER` and `FIRMWARE_VERSION` may stay empty if the Beaam never received them from the station — even when `CONNECTION` reports `true`.
 - `CONSUMED_ENERGY_ACTUAL` and `CHARGING_PROCESS_ENERGY` refer to the **current charging session** and are therefore classified as `total` (not `total_increasing`), as they reset with every new session.
 - Multiple wallboxes are queried in parallel; the failure of a single wallbox does not prevent the remaining sensors from updating.
 
@@ -172,7 +201,7 @@ For every wallbox that exposes the `OPERATING_MODE_EMS` setting, a **`select` en
 
 ## ToDo / future extensions
 
-- Further write actions via POST to `things/{thingId}/commands` (e.g. charging power, start/stop)
+- Further write actions via `POST /things/{thingId}/commands` (e.g. charging power, start/stop). Note: per NEOOM, commands only apply to datapoints marked `"controllable": true` in `/site/configuration`. On a `CHARGING_POINT_AC` that may be limited to `MAX_POWER_CHARGE`, `MAX_POWER_CHARGE_FALLBACK` and `PHASE_SWITCHING_MODE` — commands such as `STATION_AVAILABILITY` or `ENABLE_CHARGING` exist in the API enum but are not necessarily available on your own thing.
 - Support for additional thing types (BATTERY, PV, INVERTER, ELECTRICITY_METER_AC) analogous to the wallbox integration
 - Configurable polling interval
 

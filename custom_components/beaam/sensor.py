@@ -3,6 +3,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import (
+    EntityCategory,
     UnitOfPower,
     UnitOfEnergy,
     UnitOfElectricCurrent,
@@ -10,7 +11,7 @@ from homeassistant.const import (
     UnitOfTime,
     PERCENTAGE,
 )
-from .const import DOMAIN
+from .const import DOMAIN, SITE_CONNECTIVITY_KEYS
 
 # Mapping von Beaam-Keys auf Einheit & Device Class
 SENSOR_DEFINITIONS = {
@@ -24,6 +25,8 @@ SENSOR_DEFINITIONS = {
     "POWER_CHARGING_STATIONS": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_HEATING": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_GRID": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
+    # headroom left at the grid connection (see siteInfo.gridConnections limits)
+    "POWER_GRID_REMAINING": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "POWER_STORAGE": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "MAX_NETWORK_UTILIZATION": (UnitOfPower.WATT, "power", SensorStateClass.MEASUREMENT),
     "ENERGY_PRODUCED": (UnitOfEnergy.WATT_HOUR, "energy", SensorStateClass.TOTAL_INCREASING),
@@ -63,7 +66,11 @@ CHARGING_POINT_SENSOR_DEFINITIONS = {
     "LAST_RFID_CARD": (None, None, None),
     "SERIAL_NUMBER": (None, None, None),
     "FIRMWARE_VERSION": (None, None, None),
+    "ERROR_CODES": (None, None, None),
 }
+
+# Charging-point keys exposed as diagnostics rather than primary readings.
+CHARGING_POINT_DIAGNOSTIC_KEYS = {"ERROR_CODES"}
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -74,6 +81,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     energy_flow = coordinator.data.get("site_state", {}).get("energyFlow", {})
     for state in energy_flow.get("states", []):
         key = state["key"]
+        if key in SITE_CONNECTIVITY_KEYS:
+            continue  # boolean flags live on the binary_sensor platform
         sensors.append(BeaamSensor(coordinator, key))
 
     charging_points = coordinator.data.get("charging_points", {})
@@ -162,6 +171,8 @@ class BeaamChargingPointSensor(SensorEntity):
         self._key = key
         definition = CHARGING_POINT_SENSOR_DEFINITIONS.get(key, (None, None, None))
         self._unit, self._device_class, self._state_class = definition
+        if key in CHARGING_POINT_DIAGNOSTIC_KEYS:
+            self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
     @property
     def name(self):
@@ -180,7 +191,12 @@ class BeaamChargingPointSensor(SensorEntity):
         cp = self.coordinator.data.get("charging_points", {}).get(self._thing_id, {})
         for state in cp.get("states", []):
             if state["key"] == self._key:
-                return state.get("value")
+                value = state.get("value")
+                if isinstance(value, list):
+                    # ERROR_CODES is a STRING_ARRAY; a HA state must be a scalar
+                    # string, so join it and report the empty case explicitly.
+                    return ", ".join(str(item) for item in value) or "OK"
+                return value
         return None
 
     @property
