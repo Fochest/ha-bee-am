@@ -140,10 +140,10 @@ manually enabled one of those sensors need to point at the binary sensor.
 ### Added
 
 - Wallbox support: things of type `CHARGING_POINT_AC` are discovered through
-  `/site/configuration` by type rather than a hard-coded ID, and exposed as
-  their own Home Assistant device with power, current, voltage, energy, session
-  and state sensors. Multiple wallboxes are polled in parallel and one failing
-  does not stop the others.
+  `/site/configuration` by their type, so no thing ID is configured anywhere, and
+  each is exposed as its own Home Assistant device with power, current, voltage,
+  energy, session and state sensors. Multiple wallboxes are polled in parallel
+  and one failing does not stop the others.
 - HACS validation workflow.
 
 ## [0.2.0] - 2025-09-19
