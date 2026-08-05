@@ -8,11 +8,7 @@ It exposes measurements such as power production, consumption, grid import/expor
 
 All sensors now also provide the `state_class` attribute so that they are evaluated correctly in Home Assistant dashboards.
 
-> **Compatibility** (as of 2026-08-05): successfully tested against local **BEAAM API `2.13.0`** — the `info.version` of the OpenAPI document at `http://<beaam>/api-json`; the device reported NTUITY OS `v1.17.0-build3919` and firmware `1.36.0`.
->
-> There is **no known minimum software version.** The integration only creates entities for keys the API actually returns — a missing key means a missing entity, not an error. Only **writing** (the charging-mode select) needs software that supports `PUT /things/{thingId}/settings`; NEOOM introduced that in **BEAAM software 1.77** according to the changelog. Without it you simply lose the select, the sensors keep working.
->
-> Careful with version numbers: the "BEAAM Software" series in NEOOM's changelog (1.7x) is **not** the same numbering as the locally reported NTUITY OS or API version.
+> **Compatibility:** There is **no known minimum Beaam software version**. The integration only creates entities for datapoints your site actually reports — a missing one means a missing entity, not an error. Only **switching the charging mode** needs Beaam software that supports writing settings (introduced by NEOOM in **1.77**); without it you simply lose the select and the sensors keep working. Last verified against BEAAM API `2.13.0` (details and the checking tool: [`tools/README.md`](tools/README.md)).
 
 ---
 
@@ -200,32 +196,6 @@ For every wallbox that exposes the `OPERATING_MODE_EMS` setting, a **`select` en
     logs:
       custom_components.beaam: debug
   ```
-
----
-
-## Pinning the API surface and checking updates (`tools/api_snapshot.py`)
-
-Because the integration discovers everything at runtime, a firmware update never crashes it — it just silently stops creating an entity whose key disappeared. `tools/api_snapshot.py` makes that visible before users notice:
-
-```bash
-# record the surface of the software running right now
-BEAAM_TOKEN=sk_beaam_… python tools/api_snapshot.py capture \
-    --ip 192.168.1.50 -o tools/baselines/api-2.13.0.json
-
-# after an update: capture again and check against every kept baseline
-BEAAM_TOKEN=sk_beaam_… python tools/api_snapshot.py capture --ip 192.168.1.50 -o /tmp/new.json
-python tools/api_snapshot.py compare tools/baselines /tmp/new.json
-```
-
-`capture` writes two files: the snapshot (endpoint status, datapoint keys with `dataType`/`unitOfMeasure`/`controllable`, JSON type of each value) and, next to it, the full OpenAPI document as `*.openapi.json`, which pins the complete datapoint vocabulary of that version. Measurements, thing IDs, the site ID and geo coordinates are deliberately **not** stored, so baselines can be committed.
-
-`compare` classifies every difference:
-
-- **BREAKING** — something the integration actually uses vanished or changed type (including a used OpenAPI operation going missing). Exit code 1.
-- **WARN** — a key or thing type disappeared that no entity was built from.
-- **INFO** — new keys, version bumps, changed `controllable` flags. For new keys it also says whether the prefix fallback covers them or whether they would be created disabled and should be mapped.
-
-The set of "actually used" keys is read out of `custom_components/beaam/` via AST rather than duplicated, so the check follows the code automatically. Several baselines in the directory are all checked against the candidate, which is how you test against multiple older versions.
 
 ---
 
