@@ -1,4 +1,5 @@
-import async_timeout
+import asyncio
+
 import aiohttp
 
 from .const import (
@@ -20,14 +21,14 @@ class BeaamApiClient:
 
     async def _get(self, path: str):
         url = f"{self._base_url}{path}"
-        async with async_timeout.timeout(15):
+        async with asyncio.timeout(15):
             resp = await self._session.get(url, headers=self._headers())
             resp.raise_for_status()
             return await resp.json()
 
     async def _put(self, path: str, payload):
         url = f"{self._base_url}{path}"
-        async with async_timeout.timeout(15):
+        async with asyncio.timeout(15):
             resp = await self._session.put(url, headers=self._headers(), json=payload)
             resp.raise_for_status()
             # Beaam answers PUT /settings with a text/plain body, so don't decode

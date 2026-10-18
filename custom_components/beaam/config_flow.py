@@ -1,6 +1,11 @@
 from __future__ import annotations
+
+import aiohttp
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
+from .api import BeaamApiClient
 from .const import DOMAIN
 
 
@@ -21,10 +26,24 @@ class BeaamConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             elif not token:
                 errors["api_token"] = "invalid_token"
             else:
-                return self.async_create_entry(
-                    title=f"Beaam @ {ip}",
-                    data=user_input,
-                )
+                await self.async_set_unique_id(ip)
+                self._abort_if_unique_id_configured()
+
+                api = BeaamApiClient(async_get_clientsession(self.hass), ip, token)
+                try:
+                    await api.async_get_site_state()
+                except aiohttp.ClientResponseError as err:
+                    if err.status in (401, 403):
+                        errors["api_token"] = "invalid_auth"
+                    else:
+                        errors["base"] = "cannot_connect"
+                except (aiohttp.ClientError, TimeoutError):
+                    errors["base"] = "cannot_connect"
+                else:
+                    return self.async_create_entry(
+                        title=f"Beaam @ {ip}",
+                        data={"beaam_ip": ip, "api_token": token},
+                    )
 
         schema = vol.Schema(
             {
@@ -33,4 +52,3 @@ class BeaamConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }
         )
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
-

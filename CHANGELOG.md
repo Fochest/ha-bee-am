@@ -9,8 +9,15 @@ Releases are cut by pushing a tag; note that the tag names carry a dot after the
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-18
+
 ### Added
 
+- `strings.json` and `translations/en.json` / `de.json`, so the setup dialog
+  shows titles, field labels and error texts instead of raw keys.
+- The config flow now tests the IP and token against the Beaam and reports
+  `cannot_connect` or `invalid_auth`; the IP is the entry's unique ID, so the
+  same Beaam cannot be added twice.
 - Labels for the three `OPERATING_MODE_EMS` values the integration did not know:
   `GRIID_CONTROLLED` ("Intelligent"), `DEVICE_CONTROLLED` ("Ausgenommen") and
   `FLEXIBILITY_MARKETING` ("Flexibilitätsvermarktung"), so Home Assistant shows
@@ -57,6 +64,15 @@ Releases are cut by pushing a tag; note that the tag names carry a dot after the
 - Selecting the mode the wallbox is already in was rejected with a log warning
   when that mode was one the integration did not know. The select now resolves
   any option it offers, mapped or raw.
+
+### Changed
+
+- All sensors are `CoordinatorEntity`s: no more per-entity polling, values are
+  no longer one cycle behind, and sensors turn unavailable when the Beaam is
+  unreachable.
+- `api.py` uses `asyncio.timeout` instead of the `async_timeout` package.
+- Manifest `documentation` points to this repository; `LICENSE` names the
+  actual copyright holder.
 
 ## [0.5.1] - 2026-08-05
 

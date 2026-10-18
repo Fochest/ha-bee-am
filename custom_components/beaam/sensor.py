@@ -2,6 +2,7 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.const import (
     EntityCategory,
     UnitOfPower,
@@ -95,9 +96,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(sensors)
 
 
-class BeaamSensor(SensorEntity):
+class BeaamSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, key):
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._key = key
         definition = SENSOR_DEFINITIONS.get(key, (None, None, None))
         self._unit, self._device_class, self._state_class = definition
@@ -160,13 +161,10 @@ class BeaamSensor(SensorEntity):
     def device_class(self):
         return self._device_class
 
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
 
-
-class BeaamChargingPointSensor(SensorEntity):
+class BeaamChargingPointSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, thing_id, key):
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._thing_id = thing_id
         self._key = key
         definition = CHARGING_POINT_SENSOR_DEFINITIONS.get(key, (None, None, None))
@@ -215,6 +213,3 @@ class BeaamChargingPointSensor(SensorEntity):
             "manufacturer": "NEOOM",
             "model": "CHARGING_POINT_AC",
         }
-
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()

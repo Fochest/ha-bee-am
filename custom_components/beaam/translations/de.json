@@ -1,0 +1,27 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Beaam verbinden",
+        "description": "Lokale Adresse des NEOOM Beaam und ein API-Token eingeben.",
+        "data": {
+          "beaam_ip": "IP-Adresse",
+          "api_token": "API-Token"
+        },
+        "data_description": {
+          "beaam_ip": "IP-Adresse oder Hostname des Beaam im Netzwerk, z. B. 192.168.1.50.",
+          "api_token": "API-Key für die BEAAM-API. Wird auf connect.neoom.com unter Zugriffsverwaltung > API-Keys erzeugt."
+        }
+      }
+    },
+    "error": {
+      "invalid_ip": "Bitte die IP-Adresse des Beaam eingeben.",
+      "invalid_token": "Bitte ein API-Token eingeben.",
+      "invalid_auth": "Der Beaam hat das API-Token abgelehnt.",
+      "cannot_connect": "Verbindung zum Beaam fehlgeschlagen. IP-Adresse und Erreichbarkeit prüfen."
+    },
+    "abort": {
+      "already_configured": "Dieser Beaam ist bereits eingerichtet."
+    }
+  }
+}
