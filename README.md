@@ -2,6 +2,8 @@
 
 *[English](README.en.md) • **Deutsch***
 
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz)
+
 Diese Home Assistant Custom-Integration bindet die **interne Beaam API** an.  (https://developer.neoom.com/reference/concepts-terms-1)
 
 Es werden Messwerte wie Stromproduktion, Verbrauch, Netzbezug, Speicherzustand sowie **Fraktionswerte (z. B. PV → Speicher, PV → Netz)** als Sensoren in Home Assistant verfügbar gemacht.
@@ -15,6 +17,20 @@ Alle Sensoren unterstützen nun zusätzlich das Attribut `state_class`, um korre
 ## Installation
 
 Was sich je Version geändert hat, steht im [Changelog](CHANGELOG.md).
+
+### Über HACS (empfohlen)
+
+Die Integration ist im Standard-Store von [HACS](https://hacs.xyz) erhältlich, ein eigenes Repository muss nicht hinzugefügt werden.
+
+[![In HACS öffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Fochest&repository=ha-bee-am&category=integration)
+
+1. In Home Assistant **HACS** öffnen, nach `BEAAM Integration` suchen und **Herunterladen** wählen (oder direkt über den Button oben).
+2. Home Assistant neu starten.
+3. Unter **Einstellungen → Geräte & Dienste → Integration hinzufügen** nach `Beaam` suchen.
+
+Updates zeigt HACS danach automatisch an.
+
+### Manuell
 
 1. Lade das `beaam.zip` aus dem neuesten [Release](https://github.com/Fochest/ha-bee-am/releases/latest) herunter und entpacke es nach:
 
