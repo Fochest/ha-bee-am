@@ -9,6 +9,17 @@ Releases are cut by pushing a tag; note that the tag names carry a dot after the
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-11-02
+
+### Changed
+
+- Documentation only, no functional change. The disclaimer in both READMEs now
+  states that this is not an official NEOOM project, that the integration is
+  used at your own risk (including damage to hardware), that there is no
+  warranty and that questions about it do not belong with NEOOM.
+- Both READMEs describe the installation through the HACS default store, which
+  the integration joined after hacs/default#9149 was merged.
+
 ## [0.5.2] - 2026-10-18
 
 ### Added
@@ -213,7 +224,9 @@ manually enabled one of those sensors need to point at the binary sensor.
   with units and device classes, fraction values converted from decimal to
   percent, and a config flow taking the Beaam address and bearer token.
 
-[Unreleased]: https://github.com/Fochest/ha-bee-am/compare/v.0.5.1...HEAD
+[Unreleased]: https://github.com/Fochest/ha-bee-am/compare/v.0.5.3...HEAD
+[0.5.3]: https://github.com/Fochest/ha-bee-am/compare/v.0.5.2...v.0.5.3
+[0.5.2]: https://github.com/Fochest/ha-bee-am/compare/v.0.5.1...v.0.5.2
 [0.5.1]: https://github.com/Fochest/ha-bee-am/compare/v.0.5.0...v.0.5.1
 [0.5.0]: https://github.com/Fochest/ha-bee-am/compare/v.0.4.5...v.0.5.0
 [0.4.5]: https://github.com/Fochest/ha-bee-am/compare/v.0.4.4...v.0.4.5
