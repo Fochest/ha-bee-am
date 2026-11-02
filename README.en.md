@@ -240,4 +240,10 @@ MIT
 
 ## Disclaimer
 
-I am in no way affiliated with NEOOM; this is a purely private development project without commercial intent.
+**Unofficial project.** This integration is not an official NEOOM project. It is not developed, reviewed, supported or endorsed by NEOOM, and I have no connection to NEOOM. NEOOM, Beaam, Compleo and any other names and trademarks mentioned belong to their respective owners and are used here only to describe compatibility. This is a purely private development project without commercial intent.
+
+**Use at your own risk.** The integration talks to the local Beaam API and can write to it, for example switching a wallbox's charging mode. I accept no liability for damage to hardware (Beaam, wallbox, inverter, storage, vehicle, house installation and anything connected to them), for malfunctions, data loss, lost savings or higher energy costs. To the extent permitted by law, this also covers indirect damages.
+
+**No warranty.** The software is provided as is (see the MIT license), without any guarantee of function, fitness or freedom from errors. NEOOM does not promise the local API as a stable interface for third parties; changes to the Beaam software or API can break the integration or cause unexpected behavior at any time. The integration is not intended for safety-critical control.
+
+**Manufacturer and support.** I cannot judge whether using this integration affects warranty or support claims toward NEOOM or other manufacturers. Please do not send questions or bug reports about this integration to NEOOM; use this repository instead.

@@ -240,4 +240,10 @@ MIT
 
 ## Disclaimer
 
-Ich bin in keinster Weise mit NEOOM assoziiert, dies Projekt betreibe ich als rein privates Entwicklungsprojekt ohne Gewinnabsicht.
+**Inoffizielles Projekt.** Diese Integration ist kein offizielles NEOOM-Projekt. Sie wird nicht von NEOOM entwickelt, geprüft, unterstützt oder empfohlen, und ich stehe in keiner Verbindung zu NEOOM. NEOOM, Beaam, Compleo und weitere genannte Namen und Marken gehören ihren jeweiligen Inhabern und werden hier nur genannt, um die Kompatibilität zu beschreiben. Ich betreibe das Projekt als rein privates Entwicklungsprojekt ohne Gewinnabsicht.
+
+**Nutzung auf eigene Gefahr.** Die Integration greift auf die lokale Beaam-API zu und kann schreibend eingreifen, etwa den Lademodus einer Wallbox umstellen. Ich übernehme keine Haftung für Schäden an Hardware (Beaam, Wallbox, Wechselrichter, Speicher, Fahrzeug, Hausinstallation und alles, was daran hängt), für Fehlfunktionen, Datenverlust, entgangene Einsparungen oder höhere Energiekosten. Das gilt im gesetzlich zulässigen Rahmen auch für mittelbare Schäden.
+
+**Keine Gewährleistung.** Die Software wird wie besehen bereitgestellt (siehe MIT-Lizenz), ohne Zusicherung von Funktion, Eignung oder Fehlerfreiheit. Die lokale API ist von NEOOM nicht als stabile Schnittstelle für Dritte zugesichert; Änderungen an Beaam-Software oder API können die Integration jederzeit beeinträchtigen oder zu unerwartetem Verhalten führen. Die Integration ist nicht für sicherheitsrelevante Steuerungen gedacht.
+
+**Hersteller und Support.** Ob die Nutzung Garantie- oder Supportansprüche gegenüber NEOOM oder anderen Herstellern berührt, kann ich nicht beurteilen. Bitte richte Fragen und Fehlermeldungen zu dieser Integration nicht an NEOOM, sondern an dieses Repository.
